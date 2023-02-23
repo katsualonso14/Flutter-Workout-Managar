@@ -10,6 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: const Screen(),
       routes: {
         '/add_page':(BuildContext context) => const AddPage(),
@@ -59,7 +60,7 @@ class _ScreenState extends State<Screen> {
           currentIndex: 0,
           onTap: _onItemTapped,
           items: [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'ホーム'),
+            BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: 'カレンダー'),
             BottomNavigationBarItem(icon: Icon(Icons.signal_cellular_alt), label: 'レベル'),
           ],
         ),
