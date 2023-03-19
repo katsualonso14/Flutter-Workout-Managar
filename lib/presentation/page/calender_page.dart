@@ -2,16 +2,16 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class CalenderPage extends StatefulWidget {
-  const CalenderPage({Key? key}) : super(key: key);
+class CalenderPage extends ConsumerStatefulWidget {
+   const CalenderPage({Key? key}) : super(key: key);
+   @override
+   CalenderPageState createState() => CalenderPageState();
+   }
 
-  @override
-  State<CalenderPage> createState() => _CalenderPageState();
-}
-
-class _CalenderPageState extends State<CalenderPage> {
+   class CalenderPageState extends ConsumerState<CalenderPage> {
   DateTime _focusedDay = DateTime.now(); // 現在日
   CalendarFormat _calendarFormat = CalendarFormat.month; // 月フォーマット
   DateTime? _selectedDay; // 選択している日付
@@ -19,17 +19,17 @@ class _CalenderPageState extends State<CalenderPage> {
 
   //Map形式で保持　keyが日付　値が文字列
   final sampleMap = {
-    DateTime.utc(2023, 2,20): ['firstEvent', 'secondEvent'],
-    DateTime.utc(2023, 2,5): ['thirdEvent', 'fourthEvent'],
+    DateTime.utc(2023, 3,20): ['firstEvent', 'secondEvent'],
+    DateTime.utc(2023, 3,5): ['thirdEvent', 'fourthEvent'],
   };
 
   final sampleEvents = {
-    DateTime.utc(2023, 2,20): ['firstEvent', 'secondEvent'],
-    DateTime.utc(2023, 2,5): ['thirdEvent', 'fourthEvent']
+    DateTime.utc(2023, 3,20): ['firstEvent', 'secondEvent'],
+    DateTime.utc(2023, 3,5): ['thirdEvent', 'fourthEvent']
   };
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return Scaffold(
       // カレンダーUI実装
       body: Column(
