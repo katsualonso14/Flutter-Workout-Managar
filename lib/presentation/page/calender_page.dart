@@ -19,13 +19,13 @@ class _CalenderPageState extends State<CalenderPage> {
 
   //Map形式で保持　keyが日付　値が文字列
   final sampleMap = {
-    DateTime.utc(2023, 3,20): ['firstEvent', 'secondEvent'],
-    DateTime.utc(2023, 3,5): ['thirdEvent', 'fourthEvent'],
+    DateTime.utc(2023, 2,20): ['firstEvent', 'secondEvent'],
+    DateTime.utc(2023, 2,5): ['thirdEvent', 'fourthEvent'],
   };
 
   final sampleEvents = {
-    DateTime.utc(2023, 3,20): ['firstEvent', 'secondEvent'],
-    DateTime.utc(2023, 3,5): ['thirdEvent', 'fourthEvent']
+    DateTime.utc(2023, 2,20): ['firstEvent', 'secondEvent'],
+    DateTime.utc(2023, 2,5): ['thirdEvent', 'fourthEvent']
   };
 
   @override
