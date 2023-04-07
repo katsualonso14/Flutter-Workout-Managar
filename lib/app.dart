@@ -6,21 +6,16 @@ import 'domain/repositories/providers.dart';
 import 'presentation/page/calender_page.dart';
 import 'presentation/page/level_manage_page.dart';
 
-class MyApp extends ConsumerStatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends ConsumerState<MyApp> {
+// ConsumerWidgetでナビゲーションバーの状態管理
+class MyApp extends ConsumerWidget {
+   MyApp({Key? key}) : super(key: key);
 
   final _screens = [
     CalenderPage(),
     LevelManagePage()
   ];
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // ナビゲーション用のプロバイダーをwatchで取得
     final view = ref.watch(baseTabViewProvider.state);
     return MaterialApp(
@@ -42,11 +37,8 @@ class _MyAppState extends ConsumerState<MyApp> {
         ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: view.state.index, // //プロバイダーで選択された番号(index)のページを表示
-          // onTap: (int index) => view.update((state) => ViewType.values[index]), // プロバイダーをアップデートし現在のページを表示
           onTap: (int index){
-            // 値は入れれてるが更新でhない
-            view.state = ViewType.values[index];
-            print('on tap');
+            view.state = ViewType.values[index]; //インデック番目のViewTypeをviewに代入
           },
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: 'カレンダー'),

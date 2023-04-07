@@ -8,7 +8,14 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../domain/repositories/providers.dart';
 import '../../main.dart';
 
-class CalenderPage extends ConsumerWidget {
+class CalenderPage extends ConsumerStatefulWidget {
+  const CalenderPage({Key? key}) : super(key: key);
+
+  @override
+  _CalendarPageState createState() => _CalendarPageState();
+}
+
+class _CalendarPageState extends ConsumerState<CalenderPage> {
   DateTime _focusedDay = DateTime.now(); // 現在日
   CalendarFormat _calendarFormat = CalendarFormat.month; // 月フォーマット
   DateTime? _selectedDay; // 選択している日付
@@ -24,9 +31,8 @@ class CalenderPage extends ConsumerWidget {
     DateTime.utc(2023, 3,20): ['firstEvent', 'secondEvent'],
     DateTime.utc(2023, 3,5): ['thirdEvent', 'fourthEvent']
   };
-
   @override
-  Widget build(BuildContext context, WidgetRef ref){
+  Widget build(BuildContext context) {
     final _myCalendarFormat = ref.watch(calendarFormatProvider.state);
     return Scaffold(
       // カレンダーUI実装
@@ -44,27 +50,24 @@ class CalenderPage extends ConsumerWidget {
                 calendarFormat: _calendarFormat, // デフォを月表示に設定
                 onFormatChanged: (format) {  // 「月」「週」変更
                   if (_calendarFormat!= format) {
-
-                    _calendarFormat = format;
-                    print('a');
-                    // setState(() {
-                    //   _calendarFormat = format;
-                    // });
+                    setState(() {
+                      _calendarFormat = format;
+                    });
                   }
                 },
                 // 選択日のアニメーション
                 selectedDayPredicate: (day) {
-              return isSameDay(_selectedDay, day);
-            },
+                  return isSameDay(_selectedDay, day);
+                },
                 // 日付が選択されたときの処理
                 onDaySelected: (selectedDay, focusedDay) {
-                  // setState(() {
-                  //   _selectedDay = selectedDay;
-                  //   _focusedDay = focusedDay;
-                  //   _selectedEvents = sampleEvents[selectedDay] ?? [];
-                  // });
+                  setState(() {
+                    _selectedDay = selectedDay;
+                    _focusedDay = focusedDay;
+                    _selectedEvents = sampleEvents[selectedDay] ?? [];
+                  });
                 }
-                ),
+            ),
           ),
           // タップした時表示するリスト
           Expanded(
