@@ -5,13 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class CalenderPage extends ConsumerStatefulWidget {
-   const CalenderPage({Key? key}) : super(key: key);
-   @override
-   CalenderPageState createState() => CalenderPageState();
-   }
+import '../../domain/repositories/providers.dart';
+import '../../main.dart';
 
-   class CalenderPageState extends ConsumerState<CalenderPage> {
+class CalenderPage extends ConsumerWidget {
   DateTime _focusedDay = DateTime.now(); // 現在日
   CalendarFormat _calendarFormat = CalendarFormat.month; // 月フォーマット
   DateTime? _selectedDay; // 選択している日付
@@ -29,7 +26,8 @@ class CalenderPage extends ConsumerStatefulWidget {
   };
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context, WidgetRef ref){
+    final _myCalendarFormat = ref.watch(calendarFormatProvider.state);
     return Scaffold(
       // カレンダーUI実装
       body: Column(
@@ -45,10 +43,13 @@ class CalenderPage extends ConsumerStatefulWidget {
                 },
                 calendarFormat: _calendarFormat, // デフォを月表示に設定
                 onFormatChanged: (format) {  // 「月」「週」変更
-                  if (_calendarFormat != format) {
-                    setState(() {
-                      _calendarFormat = format;
-                    });
+                  if (_calendarFormat!= format) {
+
+                    _calendarFormat = format;
+                    print('a');
+                    // setState(() {
+                    //   _calendarFormat = format;
+                    // });
                   }
                 },
                 // 選択日のアニメーション
@@ -57,11 +58,11 @@ class CalenderPage extends ConsumerStatefulWidget {
             },
                 // 日付が選択されたときの処理
                 onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    _selectedDay = selectedDay;
-                    _focusedDay = focusedDay;
-                    _selectedEvents = sampleEvents[selectedDay] ?? [];
-                  });
+                  // setState(() {
+                  //   _selectedDay = selectedDay;
+                  //   _focusedDay = focusedDay;
+                  //   _selectedEvents = sampleEvents[selectedDay] ?? [];
+                  // });
                 }
                 ),
           ),
