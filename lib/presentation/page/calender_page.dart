@@ -1,25 +1,15 @@
 //カレンダーページ
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../../domain/repositories/providers.dart';
-import '../../main.dart';
+class CalenderPage extends HookWidget {
+   CalenderPage({Key? key}) : super(key: key);
 
-class CalenderPage extends ConsumerStatefulWidget {
-  const CalenderPage({Key? key}) : super(key: key);
-
-  @override
-  _CalendarPageState createState() => _CalendarPageState();
-}
-
-class _CalendarPageState extends ConsumerState<CalenderPage> {
   DateTime _focusedDay = DateTime.now(); // 現在日
-  CalendarFormat _calendarFormat = CalendarFormat.month; // 月フォーマット
   DateTime? _selectedDay; // 選択している日付
   List<String> _selectedEvents = [];
+  final _calendarFormat = [CalendarFormat.month, CalendarFormat.twoWeeks, CalendarFormat.week]; // カレンダーフォーマット配列
 
   //Map形式で保持　keyが日付　値が文字列
   final sampleMap = {
@@ -33,7 +23,7 @@ class _CalendarPageState extends ConsumerState<CalenderPage> {
   };
   @override
   Widget build(BuildContext context) {
-    final _myCalendarFormat = ref.watch(calendarFormatProvider.state);
+    final formatIndex = useState(0);
     return Scaffold(
       // カレンダーUI実装
       body: Column(
@@ -47,12 +37,10 @@ class _CalendarPageState extends ConsumerState<CalenderPage> {
                 eventLoader: (date) { // イベントドット処理
                   return sampleMap[date] ?? [];
                 },
-                calendarFormat: _calendarFormat, // デフォを月表示に設定
+                calendarFormat: _calendarFormat[formatIndex.value], // デフォを月表示に設定
                 onFormatChanged: (format) {  // 「月」「週」変更
-                  if (_calendarFormat!= format) {
-                    setState(() {
-                      _calendarFormat = format;
-                    });
+                  if (formatIndex.value != format) { // タップされた際に
+                    formatIndex.value = format.index;
                   }
                 },
                 // 選択日のアニメーション
@@ -61,11 +49,11 @@ class _CalendarPageState extends ConsumerState<CalenderPage> {
                 },
                 // 日付が選択されたときの処理
                 onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    _selectedDay = selectedDay;
-                    _focusedDay = focusedDay;
-                    _selectedEvents = sampleEvents[selectedDay] ?? [];
-                  });
+                  // setState(() {
+                  //   _selectedDay = selectedDay;
+                  //   _focusedDay = focusedDay;
+                  //   _selectedEvents = sampleEvents[selectedDay] ?? [];
+                  // });
                 }
             ),
           ),
