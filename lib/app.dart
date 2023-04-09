@@ -1,48 +1,28 @@
 
 import 'package:flutter/material.dart';
-import 'presentation/page/add_page.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'domain/repositories/providers.dart';
+
 import 'presentation/page/calender_page.dart';
 import 'presentation/page/level_manage_page.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+// ConsumerWidgetでナビゲーションバーの状態管理
+class MyApp extends ConsumerWidget {
+   MyApp({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const Screen(),
-      routes: {
-        '/add_page':(BuildContext context) => const AddPage(),
-      }
-    );
-  }
-}
-
-
-class Screen extends StatefulWidget {
-  const Screen({Key? key}) : super(key: key);
-  @override
-  State<Screen> createState() => _ScreenState();
-}
-
-class _ScreenState extends State<Screen> {
-  static const _screens = [
+  final _screens = [
     CalenderPage(),
     LevelManagePage()
   ];
-
-  int _selectedIndex = 0;
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context, WidgetRef ref) {
+    // ナビゲーション用のプロバイダーをwatchで取得
+    final view = ref.watch(baseTabViewProvider.state);
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
         appBar: AppBar(title: const Text('Workout Manager')),
-        body: _screens[_selectedIndex],
+        body: _screens[view.state.index], //プロバイダーで選択された番号(index)のページを表示
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.blue,
@@ -56,13 +36,16 @@ class _ScreenState extends State<Screen> {
           elevation: 0.0,
         ),
         bottomNavigationBar: BottomNavigationBar(
-          currentIndex: 0,
-          onTap: _onItemTapped,
+          currentIndex: view.state.index, // //プロバイダーで選択された番号(index)のページを表示
+          onTap: (int index){
+            view.state = ViewType.values[index]; //インデック番目のViewTypeをviewに代入
+          },
           items: [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'ホーム'),
+            BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: 'カレンダー'),
             BottomNavigationBarItem(icon: Icon(Icons.signal_cellular_alt), label: 'レベル'),
           ],
         ),
-      );
+      ),
+    );
   }
 }
