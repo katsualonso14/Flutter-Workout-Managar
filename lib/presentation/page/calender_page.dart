@@ -6,9 +6,6 @@ import 'package:table_calendar/table_calendar.dart';
 class CalenderPage extends HookWidget {
    CalenderPage({Key? key}) : super(key: key);
 
-  DateTime _focusedDay = DateTime.now(); // 現在日
-  DateTime? _selectedDay; // 選択している日付
-  List<String> _selectedEvents = [];
   final _calendarFormat = [CalendarFormat.month, CalendarFormat.twoWeeks, CalendarFormat.week]; // カレンダーフォーマット配列
 
   //Map形式で保持　keyが日付　値が文字列
@@ -23,7 +20,9 @@ class CalenderPage extends HookWidget {
   };
   @override
   Widget build(BuildContext context) {
-    final formatIndex = useState(0);
+    final formatIndex = useState(0); // カレンダーフォーマット変更用useState
+    final _focuseDay = useState(DateTime.now()); // 初期値が今日日付のuseState
+    final _selectedEvents = useState([]);
     return Scaffold(
       // カレンダーUI実装
       body: Column(
@@ -33,36 +32,34 @@ class CalenderPage extends HookWidget {
             child: TableCalendar(
                 firstDay: DateTime.utc(2023, 1, 1),
                 lastDay: DateTime.utc(2024, 12, 31),
-                focusedDay: _focusedDay,
+                focusedDay: _focuseDay.value,
                 eventLoader: (date) { // イベントドット処理
                   return sampleMap[date] ?? [];
                 },
                 calendarFormat: _calendarFormat[formatIndex.value], // デフォを月表示に設定
-                onFormatChanged: (format) {  // 「月」「週」変更
-                  if (formatIndex.value != format) { // タップされた際に
+                onFormatChanged: (format) {
+                  // useStateの値がタップされた際のフォーマット(format)のindexでなければカレンダーのindexに今のフォーマットインデックスを代入
+                  if (formatIndex.value != format.index) {
                     formatIndex.value = format.index;
                   }
                 },
                 // 選択日のアニメーション
                 selectedDayPredicate: (day) {
-                  return isSameDay(_selectedDay, day);
+                  return isSameDay(_focuseDay.value, day);
                 },
                 // 日付が選択されたときの処理
                 onDaySelected: (selectedDay, focusedDay) {
-                  // setState(() {
-                  //   _selectedDay = selectedDay;
-                  //   _focusedDay = focusedDay;
-                  //   _selectedEvents = sampleEvents[selectedDay] ?? [];
-                  // });
+                    _focuseDay.value = focusedDay;
+                    _selectedEvents.value = sampleEvents[selectedDay] ?? [];
                 }
             ),
           ),
           // タップした時表示するリスト
           Expanded(
             child: ListView.builder(
-              itemCount: _selectedEvents.length,
+              itemCount: _selectedEvents.value.length,
               itemBuilder: (context, index) {
-                final event = _selectedEvents[index];
+                final event = _selectedEvents.value[index];
                 return Card(
                   child: ListTile(
                     title: Text(event),
