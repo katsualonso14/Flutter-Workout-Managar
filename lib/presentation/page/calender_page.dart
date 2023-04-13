@@ -4,7 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalenderPage extends HookWidget {
-   CalenderPage({Key? key}) : super(key: key);
+   CalenderPage({Key key}) : super(key: key);
 
   final _calendarFormat = [CalendarFormat.month, CalendarFormat.twoWeeks, CalendarFormat.week]; // カレンダーフォーマット配列
 

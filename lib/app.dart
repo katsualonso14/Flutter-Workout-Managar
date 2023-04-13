@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_workout_manager/presentation/page/login.dart';
 import 'domain/repositories/providers.dart';
 
 import 'presentation/page/calender_page.dart';
@@ -8,10 +9,11 @@ import 'presentation/page/level_manage_page.dart';
 
 // ConsumerWidgetでナビゲーションバーの状態管理
 class MyApp extends ConsumerWidget {
-   MyApp({Key? key}) : super(key: key);
+   MyApp({Key key}) : super(key: key);
 
   final _screens = [
-    CalenderPage(),
+    // CalenderPage(),
+    LogIn(),
     LevelManagePage()
   ];
   @override
