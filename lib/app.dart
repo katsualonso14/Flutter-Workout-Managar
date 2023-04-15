@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_workout_manager/presentation/page/login.dart';
 import 'domain/repositories/providers.dart';
 
-import 'presentation/page/calender_page.dart';
+import 'presentation/page/calendar_page.dart';
 import 'presentation/page/level_manage_page.dart';
 
 // ConsumerWidgetでナビゲーションバーの状態管理
@@ -12,17 +12,14 @@ class MyApp extends ConsumerWidget {
    MyApp({Key key}) : super(key: key);
 
   final _screens = [
-    // CalenderPage(),
-    LogIn(),
+    CalendarPage(),
     LevelManagePage()
   ];
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // ナビゲーション用のプロバイダーをwatchで取得
     final view = ref.watch(baseTabViewProvider.state);
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(title: const Text('Workout Manager')),
         body: _screens[view.state.index], //プロバイダーで選択された番号(index)のページを表示
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -47,7 +44,6 @@ class MyApp extends ConsumerWidget {
             BottomNavigationBarItem(icon: Icon(Icons.signal_cellular_alt), label: 'レベル'),
           ],
         ),
-      ),
     );
   }
 }

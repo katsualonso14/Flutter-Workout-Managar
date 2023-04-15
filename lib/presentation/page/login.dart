@@ -2,6 +2,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_workout_manager/app.dart';
+import 'package:flutter_workout_manager/presentation/page/add_page.dart';
+import 'package:flutter_workout_manager/presentation/page/calendar_page.dart';
+import 'package:flutter_workout_manager/presentation/page/level_manage_page.dart';
+import 'package:flutter_workout_manager/presentation/page/test_page.dart';
 
 import '../../domain/repositories/providers.dart';
 
@@ -14,8 +19,7 @@ class LogIn extends ConsumerWidget {
     final userEmail = ref.watch(emailProvider.state);
     final userPassword = ref.watch(passwordProvider.state);
     final infoText = ref.watch(infoTextProvider.state);
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         body: Center(
           child: Container(
             padding: const EdgeInsets.all(32),
@@ -70,16 +74,20 @@ class LogIn extends ConsumerWidget {
                       try {
                         // メール/パスワードでログイン
                         final FirebaseAuth auth = FirebaseAuth.instance;
-                        await auth.signInWithEmailAndPassword(
+                        // TODO resultをCalendarPageに渡す
+                        final result = await auth.signInWithEmailAndPassword(
                             email: userEmail.state,
                             password: userPassword.state
                         );
-                        infoText.state = 'ログイン成功: ${userEmail.state}';
-                        print('ログイン成功: ${userEmail.state}');
+                        // カレンダーページに遷移 TODO NabBar付きで遷移させる
+                        await Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) {
+                              return MyApp();
+                            })
+                        );
                       } catch (e){
                         infoText.state = 'ログイン失敗: ${e.toString()}';
-                        print('ログイン失敗: ${e.toString()}');
-                        print(e);
+                        print(infoText.state);
                       }
                     },
                   ),
@@ -89,7 +97,6 @@ class LogIn extends ConsumerWidget {
             ),
           ),
         ),
-      ),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_workout_manager/presentation/page/login.dart';
 import 'core/firebase_options.dart';
 import 'app.dart';
 
@@ -10,5 +11,18 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform
   );
   // ProviderScopeで囲むことでriverpodを利用可能にする
-  runApp(ProviderScope(child: MyApp()));
+  // ログインページに移動　TODO ログイン済ユーザーの振り分け
+  runApp(ProviderScope(child: App()));
+}
+
+class App extends StatelessWidget {
+   App({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: LogIn(),
+    );
+  }
 }
