@@ -3,24 +3,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final provider = StateProvider((ref) => '');
-final provider2 = StateProvider((ref) => '');
-final provider3 = StateProvider((ref) => '');
+// TODO prividerの管理ファイル変更
+final emailProvider = StateProvider((ref) => '');
+final passwordProvider = StateProvider((ref) => '');
+final infoTextProvider = StateProvider((ref) => '');
 
 class LogIn extends ConsumerWidget {
   LogIn({Key key}) : super(key: key);
-// 入力されたメールアドレス
-//   String newUserEmail = "";
-  // 入力されたパスワード
-  // String newUserPassword = "";
-  // 登録・ログインに関する情報を表示
-  // String infoText = "";
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final newUserEmail = ref.watch(provider.state);
-    final newUserPassword = ref.watch(provider2.state);
-    final infoText = ref.watch(provider3.state);
+    final newUserEmail = ref.watch(emailProvider.state);
+    final newUserPassword = ref.watch(passwordProvider.state);
+    final infoText = ref.watch(infoTextProvider.state);
     return MaterialApp(
       home: Scaffold(
         body: Center(
@@ -33,9 +28,6 @@ class LogIn extends ConsumerWidget {
                   decoration: InputDecoration(labelText: "メールアドレス"),
                   onChanged: (String value) {
                     newUserEmail.state = value;
-                    // setState(() {
-                    //   newUserEmail = value;
-                    // });
                   },
                 ),
                 TextFormField(
@@ -44,9 +36,6 @@ class LogIn extends ConsumerWidget {
                   obscureText: true,
                   onChanged: (String value) {
                     newUserPassword.state = value;
-                    // setState(() {
-                    //   newUserPassword = value;
-                    // });
                   },
                 ),
                 ElevatedButton(
@@ -64,22 +53,33 @@ class LogIn extends ConsumerWidget {
                         // 登録したユーザー情報
                         final User user = result.user;
                         infoText.state = "登録OK：${user.email}";
-                        // setState(() {
-                        //   infoText = "登録OK：${user.email}";
-                        // });
                       } catch (e) {
                         // 登録に失敗した場合
                         infoText.state = "登録NG：${e.toString()}";
-                        // setState(() {
-                        //   infoText = "登録NG：${e.toString()}";
-                        // });
                       }
                     },
-
-
                     child: Text('ユーザー登録')
                 ),
-                Text(infoText.state)
+                Text(infoText.state),
+                Container(
+                  child: OutlinedButton(
+                    child: Text('ログイン'),
+                    onPressed: () async {
+                      try {
+                        // メール/パスワードでログイン
+                        final FirebaseAuth auth = FirebaseAuth.instance;
+                        await auth.signInWithEmailAndPassword(
+                            email: newUserEmail.state,
+                            password: newUserPassword.state
+                        );
+                        print('ログイン成功');
+                      } catch (e){
+                        print('ログイン失敗');
+                        print(e);
+                      }
+                    },
+                  ),
+                )
               ],
             ),
           ),
