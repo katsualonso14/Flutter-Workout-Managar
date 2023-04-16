@@ -3,10 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_workout_manager/app.dart';
-import 'package:flutter_workout_manager/presentation/page/add_page.dart';
-import 'package:flutter_workout_manager/presentation/page/calendar_page.dart';
-import 'package:flutter_workout_manager/presentation/page/level_manage_page.dart';
-import 'package:flutter_workout_manager/presentation/page/test_page.dart';
 
 import '../../domain/repositories/providers.dart';
 

@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_workout_manager/main.dart';
 import 'package:flutter_workout_manager/presentation/page/login.dart';
 import 'domain/repositories/providers.dart';
 
@@ -20,7 +21,19 @@ class MyApp extends ConsumerWidget {
     // ナビゲーション用のプロバイダーをwatchで取得
     final view = ref.watch(baseTabViewProvider.state);
     return Scaffold(
-        appBar: AppBar(title: const Text('Workout Manager')),
+        appBar: AppBar(
+            title: const Text('Workout Manager'),
+          leading: ElevatedButton(
+              child: Text('戻る'),
+              onPressed: (){
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context){
+                    return LogIn();
+                  })
+                );
+              },
+            ),
+        ),
         body: _screens[view.state.index], //プロバイダーで選択された番号(index)のページを表示
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
