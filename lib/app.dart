@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_workout_manager/main.dart';
+import 'package:flutter_workout_manager/presentation/page/add_page.dart';
 import 'package:flutter_workout_manager/presentation/page/login.dart';
 import 'domain/repositories/providers.dart';
 
@@ -9,8 +9,8 @@ import 'presentation/page/calendar_page.dart';
 import 'presentation/page/level_manage_page.dart';
 
 // ConsumerWidgetでナビゲーションバーの状態管理
-class MyApp extends ConsumerWidget {
-   MyApp({Key key}) : super(key: key);
+class MainApp extends ConsumerWidget {
+   MainApp({Key key}) : super(key: key);
 
   final _screens = [
     CalendarPage(),
@@ -35,11 +35,14 @@ class MyApp extends ConsumerWidget {
             ),
         ),
         body: _screens[view.state.index], //プロバイダーで選択された番号(index)のページを表示
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.blue,
           onPressed: () {
-            Navigator.pushNamed(context, '/add_page');
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context){
+              return AddPage();
+            })
+            );
           },
           child: const Icon(
             Icons.add,

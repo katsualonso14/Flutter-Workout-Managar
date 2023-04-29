@@ -78,7 +78,7 @@ class LogIn extends ConsumerWidget {
                         // カレンダーページに遷移 TODO NabBar付きで遷移させる
                         await Navigator.of(context).pushReplacement(
                             MaterialPageRoute(builder: (context) {
-                              return MyApp();
+                              return MainApp();
                             })
                         );
                       } catch (e){

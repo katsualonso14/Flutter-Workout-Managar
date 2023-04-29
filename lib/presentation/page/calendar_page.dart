@@ -10,19 +10,17 @@ class CalendarPage extends HookWidget {
 
   //Map形式で保持　keyが日付　値が文字列
   final sampleMap = {
-    DateTime.utc(2023, 3,20): ['firstEvent', 'secondEvent'],
-    DateTime.utc(2023, 3,5): ['thirdEvent', 'fourthEvent'],
+    DateTime.utc(2023, 5,20): ['firstEvent', 'secondEvent'],
+    DateTime.utc(2023, 5,5): ['thirdEvent', 'fourthEvent'],
   };
 
-  final sampleEvents = {
-    DateTime.utc(2023, 3,20): ['firstEvent', 'secondEvent'],
-    DateTime.utc(2023, 3,5): ['thirdEvent', 'fourthEvent']
-  };
+   final events = [];
   @override
   Widget build(BuildContext context) {
     final formatIndex = useState(0); // カレンダーフォーマット変更用useState
     final _focuseDay = useState(DateTime.now()); // 初期値が今日日付のuseState
     final _selectedEvents = useState([]);
+
     return Scaffold(
       // カレンダーUI実装
       body: Column(
@@ -36,7 +34,7 @@ class CalendarPage extends HookWidget {
                 eventLoader: (date) { // イベントドット処理
                   return sampleMap[date] ?? [];
                 },
-                calendarFormat: _calendarFormat[formatIndex.value], // デフォを月表示に設定
+                calendarFormat: _calendarFormat[formatIndex.value], // デフォルトを月表示に設定
                 onFormatChanged: (format) {
                   // useStateの値がタップされた際のフォーマット(format)のindexでなければカレンダーのindexに今のフォーマットインデックスを代入
                   if (formatIndex.value != format.index) {
@@ -50,7 +48,7 @@ class CalendarPage extends HookWidget {
                 // 日付が選択されたときの処理
                 onDaySelected: (selectedDay, focusedDay) {
                     _focuseDay.value = focusedDay;
-                    _selectedEvents.value = sampleEvents[selectedDay] ?? [];
+                    _selectedEvents.value = sampleMap[selectedDay] ?? [];
                 }
             ),
           ),
