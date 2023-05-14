@@ -1,0 +1,57 @@
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_workout_manager/data/models/event.dart';
+
+
+class FireStore {
+  static final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
+// Firebaseにイベントを追加
+  static addEvent(event) async {
+    await firebaseEvents.doc().set({
+      'date': Timestamp.fromDate(DateTime.now()),
+      'event': event,
+      'userid': firebaseEvents.id,
+    });
+  }
+
+  // TODO idを取得してidで分岐させる
+  // ユーザー情報取得
+  static Future<List<String>> getUserId() async {
+    try {
+      final snapshot = await firebaseEvents.get();
+      List<String> userIds = [];
+      snapshot.docs.forEach((user) {
+        userIds.add(user.id);
+      });
+      print(userIds);
+      return userIds;
+    } catch(e) {
+      print('取得失敗 ---$e');
+      return null;
+    }
+  }
+
+  static Future<void> getEvent() async {
+    final List<String> userIds = await getUserId();
+    var eventList = [];
+    try {
+      // firebaseの日付データ取得
+      await Future.forEach(userIds, (String id) async {
+        var doc = await firebaseEvents.doc(id).get();
+        var data = doc.data();
+        Event events = Event(
+          event: data['event'],
+          eventDay: data['date']
+        );
+        eventList.add(events);
+      });
+      return eventList;
+
+    } catch(e) {
+      print('error: $e');
+    }
+  }
+
+}
+
+

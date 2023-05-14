@@ -29,7 +29,7 @@ class AddPage extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () {
-                  addEvent(event); //イベント追加処理
+                  FireStore.addEvent(event); //イベント追加処理
                   _editController.clear();
                 },
                 child: Text('イベント登録'),

@@ -1,8 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_workout_manager/data/repositories/firebase.dart';
 import 'package:flutter_workout_manager/presentation/page/add_page.dart';
 import 'package:flutter_workout_manager/presentation/page/login.dart';
+import 'package:flutter_workout_manager/presentation/page/test_page.dart';
 import 'domain/repositories/providers.dart';
 
 import 'presentation/page/calendar_page.dart';
@@ -20,6 +22,7 @@ class MainApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // ナビゲーション用のプロバイダーをwatchで取得
     final view = ref.watch(baseTabViewProvider.state);
+    final List<String> id = ['CBJ1nH4CVXn16oYoGvND','OEvMNwh48QUlZuvV0ZMz'];
     return Scaffold(
         appBar: AppBar(
             title: const Text('Workout Manager'),
@@ -38,6 +41,7 @@ class MainApp extends ConsumerWidget {
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.blue,
           onPressed: () {
+            // FireStore.getEvent(id);
             Navigator.of(context).push(
                 MaterialPageRoute(builder: (context){
               return AddPage();
