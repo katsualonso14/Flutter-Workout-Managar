@@ -8,13 +8,22 @@ class TestPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> id = ['CBJ1nH4CVXn16oYoGvND'];
     return Scaffold(
-      body: StreamBuilder(
-        stream: FireStore.firebaseEvents.snapshots(),
+      body: FutureBuilder(
+        future: FireStore.getEvent(),
         builder: (BuildContext context, snapshot){
           return Center(
-            child: Text(
-              '${snapshot.data.docs[1]['event']}'
+            child: Column(
+              children: [
+                ElevatedButton(onPressed: (){
+                  final doc = snapshot.data[0];
+                  print('${doc.event}');
+                },
+                    child: Text('Button')
+                ),
+                Text('Text'),
+              ],
             ),
           );
         },

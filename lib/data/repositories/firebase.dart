@@ -31,6 +31,7 @@ class FireStore {
     }
   }
 
+  //イベント取得
   static Future<void> getEvent() async {
     final List<String> userIds = await getUserId();
     var eventList = [];
@@ -50,6 +51,34 @@ class FireStore {
     } catch(e) {
       print('error: $e');
     }
+  }
+
+  // 必要なデータのみの抽出(convertしてデータの方を変えてる)
+  static Future<Map<DateTime, List<Event>>> loadFirebaseData(focusedDay) async {
+    final lastDay = DateTime(focusedDay.year, focusedDay.month + 1, 0); //月の最後
+     Map<DateTime, List<Event>> _events = {};
+
+     // TODO withConverterのりかい
+    final snap = await firebaseEvents
+        .where('date', isGreaterThanOrEqualTo: focusedDay)
+        .where('date', isLessThanOrEqualTo: lastDay)
+        .withConverter(
+        fromFirestore: (event, _) => Event.fromFirestore(event),
+        toFirestore: (event, options) => event.toFirestore()
+    ).get();
+
+    for (var doc in snap.docs) {
+      final event = doc.data();
+      final _eventDay = event.eventDay.toDate();
+      final day = DateTime.utc(_eventDay.year, _eventDay.month, _eventDay.day);
+
+      if (_events[day] == null) {
+        _events[day] = [];
+      }
+
+      _events[day].add(event);
+    }
+    return _events;
   }
 
 }
