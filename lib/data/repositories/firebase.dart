@@ -53,7 +53,7 @@ class FireStore {
     }
   }
 
-  // 必要なデータのみの抽出(convertしてデータの方を変えてる)
+  // １ヶ月のデータ取得
   static Future<Map<DateTime, List<Event>>> loadFirebaseData(focusedDay) async {
     final lastDay = DateTime(focusedDay.year, focusedDay.month + 1, 0); //月の最後
      Map<DateTime, List<Event>> _events = {};

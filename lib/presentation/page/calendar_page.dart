@@ -1,9 +1,10 @@
 //カレンダーページ
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_workout_manager/data/models/event.dart';
 import 'package:flutter_workout_manager/data/repositories/firebase.dart';
-import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarPage extends HookWidget {
@@ -25,6 +26,15 @@ class CalendarPage extends HookWidget {
     final List<String> id = ['CBJ1nH4CVXn16oYoGvND','OEvMNwh48QUlZuvV0ZMz'];
     final ev = useState({});
 
+    int eventCount() {
+      final eventCount = ev.value[_focusedDay.value];
+      if(eventCount == null) {
+        return 0;
+      } else {
+        return eventCount.length;
+      }
+    }
+
     return Scaffold(
       // カレンダーUI実装
       body: Column(
@@ -43,7 +53,7 @@ class CalendarPage extends HookWidget {
                         },
                         calendarFormat: _calendarFormat[formatIndex.value], // デフォルトを月表示に設定
                         onFormatChanged: (format) {
-                          // useStateの値がタップされた際のフォーマット(format)のindexでなければカレンダーのindexに今のフォーマットインデックスを代入
+                          // useStateの値がタップ時フォーマットでなければカレンダーのindexに今のフォーマットインデックスを代入
                           if (formatIndex.value != format.index) {
                             formatIndex.value = format.index;
                           }
@@ -71,13 +81,16 @@ class CalendarPage extends HookWidget {
                     // タップした時表示するリスト
                     Expanded(
                       child: ListView.builder(
-                        itemCount: _selectedEvents.value.length,
+                        itemCount: eventCount(),
+                        // itemCount: 1,
                         itemBuilder: (context, index) {
-                          // final event = snapshot.data[index];
-                          // var eventContent = event.event;
+                          // final e = ev.value[_focusedDay.value].length;
+                          final event = ev.value[_focusedDay.value][index];
+
+                          // print(e);
                           return Card(
                             child: ListTile(
-                                title: Text('eventContent')
+                                title: Text(event.event.toString())
                                 ),
                               );
                             },
