@@ -26,6 +26,7 @@ class CalendarPage extends HookWidget {
     final List<String> id = ['CBJ1nH4CVXn16oYoGvND','OEvMNwh48QUlZuvV0ZMz'];
     final ev = useState({});
 
+    //　イベントカウント関数
     int eventCount() {
       final eventCount = ev.value[_focusedDay.value];
       if(eventCount == null) {
@@ -34,6 +35,23 @@ class CalendarPage extends HookWidget {
         return eventCount.length;
       }
     }
+    Future getEvent() async {
+      final eventList = await FireStore.loadFirebaseData(_focusedDay.value);
+      ev.value = eventList;
+    }
+
+    useEffect((){
+      getEvent();
+      return ev.value[_focusedDay.value];
+    },const []);
+
+    //　関数化してみる
+    // Future<List<Event>> getEvent(day) async {
+    //   final eventList =  await FireStore.loadFirebaseData(day);
+    //   ev.value = eventList;
+    //   print(eventList[day]);
+    //   return eventList[day] ?? [];
+    // }
 
     return Scaffold(
       // カレンダーUI実装
@@ -84,10 +102,7 @@ class CalendarPage extends HookWidget {
                         itemCount: eventCount(),
                         // itemCount: 1,
                         itemBuilder: (context, index) {
-                          // final e = ev.value[_focusedDay.value].length;
                           final event = ev.value[_focusedDay.value][index];
-
-                          // print(e);
                           return Card(
                             child: ListTile(
                                 title: Text(event.event.toString())

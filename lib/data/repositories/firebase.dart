@@ -31,7 +31,7 @@ class FireStore {
     }
   }
 
-  //イベント取得
+  //イベント取得 //TODO 使ってないが簡単なため今後使うか要検討
   static Future<void> getEvent() async {
     final List<String> userIds = await getUserId();
     var eventList = [];
