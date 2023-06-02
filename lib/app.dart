@@ -23,7 +23,7 @@ class MainApp extends ConsumerWidget {
     final List<String> id = ['CBJ1nH4CVXn16oYoGvND','OEvMNwh48QUlZuvV0ZMz'];
     return Scaffold(
         appBar: AppBar(
-            title: const Text('Workout Manager'),
+            title: const Text('Test App'),
           leading: ElevatedButton(
               child: Text('戻る'),
               onPressed: (){
