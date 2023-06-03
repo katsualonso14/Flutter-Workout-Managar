@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "184106955218",
+    "project_id": "workout-managerdb",
+    "storage_bucket": "workout-managerdb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:184106955218:android:f7e513cc94f469bd1b980b",
+        "android_client_info": {
+          "package_name": "com.example.flutter_workout_manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "184106955218-of4adncelilshrtd87tqcjnnlu7n5g1o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2VHyrHtGIqz6ARj4nB_63luZaDq_1bAs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "184106955218-of4adncelilshrtd87tqcjnnlu7n5g1o.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "184106955218-ebu9sq88snppc2iqb8837ibavur07jpl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flutterWorkoutManager"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
