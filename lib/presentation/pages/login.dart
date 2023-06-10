@@ -3,8 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_workout_manager/app.dart';
-
-import '../../domain/repositories/providers.dart';
+import '../state/providers.dart';
 
 
 class LogIn extends ConsumerWidget {
