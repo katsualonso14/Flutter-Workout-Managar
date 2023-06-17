@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -17,13 +18,13 @@ void main() async {
 }
 
 class App extends StatelessWidget {
-   App({Key key}) : super(key: key);
+   App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: StreamBuilder<User>(
+      home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting){
@@ -33,6 +34,7 @@ class App extends StatelessWidget {
           if (snapshot.hasData) {
             return MainApp();
           }
+          return const Text('this is null');
         },
       ),
     );

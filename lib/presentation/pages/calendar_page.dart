@@ -7,7 +7,7 @@ import 'package:flutter_workout_manager/data/repositories/firebase.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarPage extends HookWidget {
-   CalendarPage({Key key}) : super(key: key);
+   CalendarPage({Key? key}) : super(key: key);
 
   final _calendarFormat = [CalendarFormat.month, CalendarFormat.twoWeeks, CalendarFormat.week]; // カレンダーフォーマット配列
   @override
@@ -50,7 +50,7 @@ class CalendarPage extends HookWidget {
                         focusedDay: _focusedDay.value,
                         eventLoader: (date) {
                           print(date);
-                          return ev.value[date];
+                          return ev.value[date] ?? [];
                         },
                         calendarFormat: _calendarFormat[formatIndex.value], // デフォルトを月表示に設定
                         onFormatChanged: (format) {

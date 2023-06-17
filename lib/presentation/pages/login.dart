@@ -7,7 +7,7 @@ import '../state/providers.dart';
 
 
 class LogIn extends ConsumerWidget {
-  LogIn({Key key}) : super(key: key);
+  LogIn({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -51,8 +51,8 @@ class LogIn extends ConsumerWidget {
                           );
 
                           // 登録したユーザー情報
-                          final User user = result.user;
-                          infoText.state = '登録OK：${user.email}';
+                          final User? user = result.user;
+                          infoText.state = '登録OK：${user!.email}';
                         } catch (e) {
                           // 登録に失敗した場合
                           infoText.state = '登録NG：${e.toString()}';

@@ -16,7 +16,7 @@ class FireStore {
 
   // TODO idを取得してidで分岐させる
   // ユーザー情報取得
-  static Future<List<String>> getUserId() async {
+  static Future<List<String>?> getUserId() async {
     try {
       final snapshot = await firebaseEvents.get();
       List<String> userIds = [];
@@ -32,25 +32,25 @@ class FireStore {
   }
 
   //イベント取得 //TODO 使ってないが簡単なため今後使うか要検討
-  static Future<void> getEvent() async {
-    final List<String> userIds = await getUserId();
+  static Future<List> getEvent() async {
+    final List<String>? userIds = await getUserId();
     var eventList = [];
     try {
       // firebaseの日付データ取得
-      await Future.forEach(userIds, (String id) async {
+      await Future.forEach(userIds!, (String id) async {
         var doc = await firebaseEvents.doc(id).get();
         var data = doc.data();
         Event events = Event(
-          event: data['event'],
+          event: data!['event'],
           eventDay: data['date']
         );
         eventList.add(events);
       });
       return eventList;
-
     } catch(e) {
       print('error: $e');
     }
+    return [];
   }
 
   // １ヶ月のデータ取得
@@ -64,7 +64,7 @@ class FireStore {
         .where('date', isLessThanOrEqualTo: lastDay)
         .withConverter(
         fromFirestore: (event, _) => Event.fromFirestore(event),
-        toFirestore: (event, options) => event.toFirestore()
+        toFirestore: (Event event, _) => event.toFirestore()
     ).get();
 
     for (var doc in snap.docs) {
@@ -76,7 +76,7 @@ class FireStore {
         _events[day] = [];
       }
 
-      _events[day].add(event);
+      _events[day]!.add(event);
     }
     return _events;
   }
