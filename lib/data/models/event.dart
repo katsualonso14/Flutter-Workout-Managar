@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 //イベントクラス
 class Event {
   final String event;
-    Timestamp eventDay;
+  final Timestamp eventDay;
 
   Event({required this.event, required this.eventDay});
 

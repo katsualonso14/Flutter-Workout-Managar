@@ -1,5 +1,4 @@
 //カレンダーページ
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -26,13 +25,15 @@ class CalendarPage extends HookWidget {
         return eventCount.length;
       }
     }
-    Future getEvent() async {
+    Future<Map>  getEvent() async {
       final eventList = await FireStore.loadFirebaseData(_focusedDay.value);
       ev.value = eventList;
+      return ev.value;
     }
 
     useEffect((){
       getEvent();
+      return null;
     },const []);
 
     return Scaffold(
@@ -49,8 +50,7 @@ class CalendarPage extends HookWidget {
                         },
                         focusedDay: _focusedDay.value,
                         eventLoader: (date) {
-                          print(date);
-                          return ev.value[date] ?? [];
+                            return ev.value[date] ?? [];
                         },
                         calendarFormat: _calendarFormat[formatIndex.value], // デフォルトを月表示に設定
                         onFormatChanged: (format) {
