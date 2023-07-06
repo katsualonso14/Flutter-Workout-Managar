@@ -25,7 +25,7 @@ class CalendarPage extends HookWidget {
         return eventCount.length;
       }
     }
-    Future<Map>  getEvent() async {
+    Future<Map> getEvent() async {
       final eventList = await FireStore.loadFirebaseData(_focusedDay.value);
       ev.value = eventList;
       return ev.value;

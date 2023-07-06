@@ -55,12 +55,8 @@ class FireStore {
 
   // １ヶ月のデータ取得
   static loadFirebaseData(focusedDay) async {
-    final lastDay = DateTime(focusedDay.year, focusedDay.month + 1, 0); //月の最後
      Map<DateTime, List<Event>> events = {};
 
-     // TODO withConverterのりかい
-    // ここの値が取れていない
-    // withConverterがうまくいかない
     final snap = await firebaseEvents
         .withConverter(
         fromFirestore: (event, _) => Event.fromFirestore(event),
