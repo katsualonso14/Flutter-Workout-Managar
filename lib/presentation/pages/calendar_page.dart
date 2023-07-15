@@ -2,19 +2,22 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_workout_manager/data/models/user.dart';
 import 'package:flutter_workout_manager/data/repositories/firebase.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarPage extends HookWidget {
    CalendarPage({Key? key}) : super(key: key);
-
-  final _calendarFormat = [CalendarFormat.month, CalendarFormat.twoWeeks, CalendarFormat.week]; // カレンダーフォーマット配列
-  @override
+   // カレンダーフォーマット配列
+   final _calendarFormat = [CalendarFormat.month, CalendarFormat.twoWeeks, CalendarFormat.week];
+   static Users? myAccount;
+   @override
   Widget build(BuildContext context) {
     final formatIndex = useState(0); // カレンダーフォーマット変更用useState
     final _focusedDay = useState(DateTime.now()); // 初期値が今日日付のuseState
     final List<String> id = ['CBJ1nH4CVXn16oYoGvND','OEvMNwh48QUlZuvV0ZMz'];
     final ev = useState({});
+
 
     //　イベントカウント関数
     int eventCount() {
@@ -25,7 +28,7 @@ class CalendarPage extends HookWidget {
         return eventCount.length;
       }
     }
-    Future<Map> getEvent() async {
+    Future<Map>  getEvent() async {
       final eventList = await FireStore.loadFirebaseData(_focusedDay.value);
       ev.value = eventList;
       return ev.value;

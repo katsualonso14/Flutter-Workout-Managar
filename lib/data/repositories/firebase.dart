@@ -1,10 +1,17 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_workout_manager/data/models/event.dart';
+import 'package:flutter_workout_manager/data/models/user.dart';
+import 'package:flutter_workout_manager/presentation/pages/calendar_page.dart';
 
 
 class FireStore {
   static final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
+  static final firebaseUsers = FirebaseFirestore.instance.collection('users');
+
+  static final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  static User? currentFirebaseUser;
 // Firebaseにイベントを追加
   static addEvent(event) async {
     await firebaseEvents.doc().set({
@@ -15,21 +22,23 @@ class FireStore {
   }
 
   // TODO idを取得してidで分岐させる
-  // ユーザー情報取得
-  // static Future<List<String>?> getUserId() async {
-  //   try {
-  //     final snapshot = await firebaseEvents.get();
-  //     List<String> userIds = [];
-  //     snapshot.docs.forEach((user) {
-  //       userIds.add(user.id);
-  //     });
-  //     print(userIds);
-  //     return userIds;
-  //   } catch(e) {
-  //     print('取得失敗 ---$e');
-  //     return null;
-  //   }
-  // }
+//  ユーザー情報取得
+  static Future<dynamic> getUserId(String uid) async {
+    try {
+      final snapshot = await firebaseUsers.doc(uid).get();
+      Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+      var myAccount = Users(
+          uid: uid,
+          email: data['email']
+      );
+      CalendarPage.myAccount = myAccount;
+      // TODO ユーザーの状態をもつ
+      return true;
+    } on FirebaseException catch(e) {
+      print('ユーザ取得失敗: $e'); //デバッグ用
+      return false;
+    }
+  }
 
   //イベント取得 //TODO 使ってないが簡単なため今後使うか要検討
   // static Future<List> getEvent() async {
@@ -53,7 +62,7 @@ class FireStore {
   //   return [];
   // }
 
-  // １ヶ月のデータ取得
+  // FireStoreデータ取得
   static loadFirebaseData(focusedDay) async {
      Map<DateTime, List<Event>> events = {};
 
@@ -74,8 +83,19 @@ class FireStore {
 
       events[day]!.add(event);
     }
-    print('event: $events');
     return events;
+  }
+
+  static Future<dynamic> signIn( {required String email, required String password}) async {
+    try {
+      final UserCredential _result = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password,);
+      currentFirebaseUser = _result.user;
+      print('authサインイン完了'); //デバッグ用
+      return _result;
+    } on FirebaseException catch(e) {
+      print('auth登録エラー： $e'); //デバッグ用
+      return '登録エラーしました';
+    }
   }
 
 }

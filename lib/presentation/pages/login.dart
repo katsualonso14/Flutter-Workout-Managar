@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_workout_manager/app.dart';
+import 'package:flutter_workout_manager/data/repositories/firebase.dart';
 import '../state/providers.dart';
 
 
@@ -67,19 +68,23 @@ class LogIn extends ConsumerWidget {
                     child: Text('ログイン'),
                     onPressed: () async {
                       try {
-                        // メール/パスワードでログイン
-                        final FirebaseAuth auth = FirebaseAuth.instance;
-                        // TODO resultをCalendarPageに渡す
-                        final result = await auth.signInWithEmailAndPassword(
-                            email: userEmail.state,
-                            password: userPassword.state
-                        );
+                        var result = await FireStore.signIn(email: userEmail.state, password: userPassword.state);
+                        if(result is UserCredential) {
+                          var _result = await FireStore.getUserId(result.user!.uid);
+                          if(_result == true){
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainApp()));
+                          } else {
+                            infoText.state = 'miss';
+                          }
+                        }
+
                         // カレンダーページに遷移 TODO NabBar付きで遷移させる
-                        await Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (context) {
-                              return MainApp();
-                            })
-                        );
+                        // await Navigator.of(context).pushReplacement(
+                        //     MaterialPageRoute(builder: (context) {
+                        //       return MainApp();
+                        //     })
+                        // );
+
                       } catch (e){
                         infoText.state = 'ログイン失敗: ${e.toString()}';
                         print(infoText.state);

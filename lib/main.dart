@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_workout_manager/data/repositories/firebase.dart';
+import 'package:flutter_workout_manager/presentation/pages/login.dart';
 import 'core/firebase_options.dart';
 import 'app.dart';
 
@@ -32,7 +33,7 @@ class App extends StatelessWidget {
             return SizedBox();
           }
           if (snapshot.hasData) {
-            return MainApp();
+            return LogIn();
           }
           return const Text('this is null');
         },
