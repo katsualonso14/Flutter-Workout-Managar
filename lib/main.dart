@@ -29,13 +29,28 @@ class App extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting){
-            // 状態がwaitngなら
             return SizedBox();
           }
           if (snapshot.hasData) {
-            return LogIn();
+            return FutureBuilder(
+                future: FireStore.getUserId(snapshot.data!.uid),
+                builder: (context, snapshot) {
+                  if(snapshot.connectionState == ConnectionState.waiting) {
+                    return  Container(
+                      decoration: const BoxDecoration(color: Colors.white),
+                      child: const Center(
+                              child: CircularProgressIndicator()),
+                    );
+                  }
+                  if(snapshot.hasData){
+                    return MainApp();
+                  } else {
+                    return Container();
+                  }
+            });
           }
-          return const Text('this is null');
+          // データがない場合ログインページへ
+          return LogIn();
         },
       ),
     );
