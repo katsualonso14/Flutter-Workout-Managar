@@ -40,6 +40,68 @@ class FireStore {
     }
   }
 
+  //自分のID情報取得
+  // static Future<List<Event>?> getEventFromIds(List<String> ids) async {
+  //
+  //   List<Event> eventList = [];
+  //   try{
+  //     await Future.forEach(ids, (String id) async {
+  //       var doc = await firebaseEvents.doc(id).get();
+  //       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+  //
+  //       var event = Event(
+  //         eventDay: data['date'],
+  //         event: data['event'],
+  //       );
+  //       eventList.add(event);
+  //
+  //     });
+  //     // print('自分の投稿を表示'); //デバッグ用
+  //     return eventList;
+  //   } on FirebaseException catch(e) {
+  //     print('自分の投稿取得失敗 $e'); //デバッグ用
+  //     return null;
+  //   }
+  // }
+
+  // FireStoreデータ取得
+  static Future<Map<DateTime, List<Event>>?> getEventFromIds(List<String> ids) async {
+    Map<DateTime, List<Event>> events = {};
+    List<Event> eventList = [];
+      try{
+        await Future.forEach(ids, (String id) async {
+          var doc = await firebaseEvents.doc(id).get();
+
+          final data = doc.data();
+          final _eventDay = data!['date'].toDate();
+          final day = DateTime.utc(_eventDay.year, _eventDay.month, _eventDay.day);
+
+          var event = Event(
+                  eventDay: data['date'],
+                  event: data['event'],
+                );
+
+          if(events[day] == null) {
+            events[day] = [];
+          }
+          events[day]!.add(event);
+
+        });
+
+        // print('自分の投稿を表示'); //デバッグ用
+
+
+
+
+
+        return events;
+
+      } on FirebaseException catch(e) {
+        print('自分の投稿取得失敗 $e'); //デバッグ用
+        return null;
+      }
+  }
+
   //イベント取得 //TODO 使ってないが簡単なため今後使うか要検討
   // static Future<List> getEvent() async {
   //   final List<String>? userIds = await getUserId();

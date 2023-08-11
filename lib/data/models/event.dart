@@ -5,6 +5,7 @@ class Event {
   final String event;
   final Timestamp eventDay;
 
+
   Event({required this.event, required this.eventDay});
 
   factory Event.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot,
