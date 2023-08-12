@@ -21,20 +21,17 @@ class CalendarPage extends HookWidget {
     final ev = useState({});
 
     //　イベントカウント関数
-    int eventCount() {
-      final eventCount = ev.value[_focusedDay.value];
+    int eventCount(value) {
+      var eventCount = value[_focusedDay.value];
+      print(value);
+      print(_focusedDay.value);
       if(eventCount == null) {
+        print('null');
         return 0;
       } else {
         return eventCount.length;
       }
     }
-    // Future<Map>  getEvent() async {
-    //   final eventList = await FireStore.loadFirebaseData(_focusedDay.value);
-    //   ev.value = eventList;
-    //   return ev.value;
-    // }
-    //
 
 
     return Scaffold(
@@ -65,12 +62,13 @@ class CalendarPage extends HookWidget {
                             firstDay: DateTime.utc(2023, 1, 1),
                             lastDay: DateTime.utc(2024, 12, 31),
                             onPageChanged: (focusedDay) async {
-                              ev.value = snapshot.data!;
+                              // print(snapshot.data!);
                               _focusedDay.value = focusedDay;
                             },
                             focusedDay: _focusedDay.value,
                             eventLoader: (date)  {
-                              return ev.value[date] ?? [];
+                              return snapshot.data![date] ?? [];
+                              // return ev.value[date] ?? [];
                             },
                             calendarFormat: _calendarFormat[formatIndex.value], // デフォルトを月表示に設定
                             onFormatChanged: (format) {
@@ -91,13 +89,13 @@ class CalendarPage extends HookWidget {
                         // タップした時表示するリスト
                         Expanded(
                             child: ListView.builder(
-                              itemCount: eventCount(),
+                              itemCount: eventCount(snapshot.data),
                               // itemCount: 1,
                               itemBuilder: (context, index) {
-                                final event = ev.value[_focusedDay.value][index];
+                                final event = snapshot.data![_focusedDay.value];
                                 return Card(
                                   child: ListTile(
-                                      title: Text(event)
+                                      title: Text(event![index].event),
                                   ),
                                 );
                               },
