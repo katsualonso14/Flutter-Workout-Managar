@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import '../../data/repositories/firebase.dart';
 
 class AddPage extends StatelessWidget {
-  AddPage({Key key}) : super(key: key);
+  AddPage({Key? key}) : super(key: key);
 
   final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
   final today = DateTime.now();

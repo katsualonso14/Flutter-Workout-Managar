@@ -11,7 +11,7 @@ import 'presentation/state/providers.dart';
 
 // ConsumerWidgetでナビゲーションバーの状態管理
 class MainApp extends ConsumerWidget {
-   MainApp({Key key}) : super(key: key);
+   MainApp({Key? key}) : super(key: key);
 
   final _screens = [
     CalendarPage(),
