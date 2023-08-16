@@ -18,15 +18,11 @@ class CalendarPage extends HookWidget {
   Widget build(BuildContext context) {
     final formatIndex = useState(0); // カレンダーフォーマット変更用useState
     final _focusedDay = useState(DateTime.now()); // 初期値が今日日付のuseState
-    final ev = useState({});
 
     //　イベントカウント関数
     int eventCount(value) {
       var eventCount = value[_focusedDay.value];
-      print(value);
-      print(_focusedDay.value);
       if(eventCount == null) {
-        print('null');
         return 0;
       } else {
         return eventCount.length;
