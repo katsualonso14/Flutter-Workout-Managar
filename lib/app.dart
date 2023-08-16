@@ -21,10 +21,9 @@ class MainApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // ナビゲーション用のプロバイダーをwatchで取得
     final view = ref.watch(baseTabViewProvider.state);
-    final List<String> id = ['CBJ1nH4CVXn16oYoGvND','OEvMNwh48QUlZuvV0ZMz'];
     return Scaffold(
         appBar: AppBar(
-            title: const Text('Test App'),
+            title: const Text('Workout Manager'),
           leading: ElevatedButton(
               child: Text('戻る'),
               onPressed: (){

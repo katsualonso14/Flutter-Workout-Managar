@@ -13,15 +13,23 @@ class FireStore {
   static final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   static User? currentFirebaseUser;
 // Firebaseにイベントを追加
-  static addEvent(event) async {
-    await firebaseEvents.doc().set({
+  static addEvent(event, Event newEvent) async {
+    // ログインしているユーザIDと一致したmyEvents
+    final _userEvent = firebaseUsers.doc(newEvent.userid).collection('myEvents');
+    // イベントを追加
+    var result = await firebaseEvents.add({
       'date': Timestamp.fromDate(DateTime.now()),
       'event': event,
-      'userid': firebaseEvents.id,
+      'userid': newEvent.userid,
+    });
+
+    //usersコレクションのmyEventsに追加
+    _userEvent.doc(result.id).set({
+      'eventTime': Timestamp.fromDate(DateTime.now()),
+      'event_id': result.id,
     });
   }
 
-  // TODO idを取得してidで分岐させる
 //  ユーザー情報取得
   static Future<dynamic> getUserId(String uid) async {
     try {
@@ -42,7 +50,6 @@ class FireStore {
 
   static Future<Map<DateTime, List<Event>>?> getEventFromIds(List<String> ids) async {
     Map<DateTime, List<Event>> events = {};
-    List<Event> eventList = [];
       try{
         await Future.forEach(ids, (String id) async {
           var doc = await firebaseEvents.doc(id).get();
@@ -55,7 +62,7 @@ class FireStore {
           var event = Event(
                   eventDay: data['date'],
                   event: data['event'],
-
+                  userid: data['userid'],
                 );
 
           if(events[day] == null) {
@@ -64,13 +71,6 @@ class FireStore {
           events[day]!.add(event);
 
         });
-
-        // print('自分の投稿を表示'); //デバッグ用
-
-
-
-
-
         return events;
 
       } on FirebaseException catch(e) {
@@ -79,51 +79,6 @@ class FireStore {
       }
   }
 
-  //イベント取得 //TODO 使ってないが簡単なため今後使うか要検討
-  // static Future<List> getEvent() async {
-  //   final List<String>? userIds = await getUserId();
-  //   var eventList = [];
-  //   try {
-  //     // firebaseの日付データ取得
-  //     await Future.forEach(userIds!, (String id) async {
-  //       var doc = await firebaseEvents.doc(id).get();
-  //       var data = doc.data();
-  //       Event events = Event(
-  //         event: data!['event'],
-  //         eventDay: data['date']
-  //       );
-  //       eventList.add(events);
-  //     });
-  //     return eventList;
-  //   } catch(e) {
-  //     print('error: $e');
-  //   }
-  //   return [];
-  // }
-
-  // FireStoreデータ取得
-  static loadFirebaseData(focusedDay) async {
-     Map<DateTime, List<Event>> events = {};
-
-    final snap = await firebaseEvents
-        .withConverter(
-        fromFirestore: (event, _) => Event.fromFirestore(event),
-        toFirestore: (Event event, _) => event.toFirestore()
-    ).get();
-
-    for (var doc in snap.docs) {
-      final event = doc.data();
-      final _eventDay = event.eventDay.toDate();
-      final day = DateTime.utc(_eventDay.year, _eventDay.month, _eventDay.day);
-
-      if (events[day] == null) {
-        events[day] = [];
-      }
-
-      events[day]!.add(event);
-    }
-    return events;
-  }
 
   static Future<dynamic> signIn( {required String email, required String password}) async {
     try {

@@ -2,6 +2,8 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_workout_manager/data/models/event.dart';
+import 'package:flutter_workout_manager/presentation/pages/calendar_page.dart';
 
 import '../../data/repositories/firebase.dart';
 
@@ -9,7 +11,7 @@ class AddPage extends StatelessWidget {
   AddPage({Key? key}) : super(key: key);
 
   final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
-  final today = DateTime.now();
+  final today = Timestamp.fromDate(DateTime.now());
   var event = '';
   final _editController = TextEditingController();
 
@@ -29,7 +31,12 @@ class AddPage extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () {
-                  FireStore.addEvent(event); //イベント追加処理
+                  Event newEvent = Event(
+                    event: event,
+                    eventDay: today,
+                    userid: CalendarPage.myAccount!.uid,
+                  );
+                  FireStore.addEvent(event, newEvent); //イベント追加処理
                   _editController.clear();
                 },
                 child: Text('イベント登録'),
