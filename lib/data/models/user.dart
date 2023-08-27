@@ -4,3 +4,5 @@ class Users {
   String email;
   Users({required this.uid, required this.email});
 }
+
+//TODO: domain層に引き継ぐ

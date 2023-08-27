@@ -9,4 +9,4 @@ class Event {
   Event({required this.event, required this.eventDay, required this.userid});
 }
 
-
+//TODO: domain層に引き継ぐ

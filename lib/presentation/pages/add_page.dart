@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_workout_manager/data/models/event.dart';
 import 'package:flutter_workout_manager/presentation/pages/calendar_page.dart';
 
-import '../../data/repositories/firebase.dart';
+import '../controller/firebase.dart';
 
 class AddPage extends StatelessWidget {
   AddPage({Key? key}) : super(key: key);

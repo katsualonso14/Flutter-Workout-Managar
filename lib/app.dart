@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_workout_manager/presentation/pages/add_page.dart';
 import 'package:flutter_workout_manager/presentation/pages/calendar_page.dart';
-import 'package:flutter_workout_manager/presentation/pages/level_manage_page.dart';
 import 'package:flutter_workout_manager/presentation/pages/login.dart';
 
 import 'presentation/state/providers.dart';
@@ -15,7 +14,7 @@ class MainApp extends ConsumerWidget {
 
   final _screens = [
     CalendarPage(),
-    LevelManagePage()
+    AddPage()
   ];
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -59,7 +58,7 @@ class MainApp extends ConsumerWidget {
           },
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: 'カレンダー'),
-            BottomNavigationBarItem(icon: Icon(Icons.signal_cellular_alt), label: 'レベル'),
+            BottomNavigationBarItem(icon: Icon(Icons.add), label: '作成'),
           ],
         ),
     );

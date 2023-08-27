@@ -6,7 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_workout_manager/data/models/event.dart';
 import 'package:flutter_workout_manager/data/models/user.dart';
-import 'package:flutter_workout_manager/data/repositories/firebase.dart';
+import 'package:flutter_workout_manager/presentation/controller/firebase.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarPage extends HookWidget {
