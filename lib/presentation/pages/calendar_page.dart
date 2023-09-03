@@ -7,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_workout_manager/data/models/event.dart';
 import 'package:flutter_workout_manager/data/models/user.dart';
 import 'package:flutter_workout_manager/presentation/controller/firebase.dart';
+import 'package:flutter_workout_manager/presentation/pages/add_page.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalendarPage extends HookWidget {
@@ -31,7 +32,7 @@ class CalendarPage extends HookWidget {
 
 
     return Scaffold(
-      // カレンダーUI実装
+      appBar: AppBar(title: const Text('Workout Manager'),),
       body: StreamBuilder<QuerySnapshot>(
         stream: FireStore.firebaseUsers.doc(myAccount?.uid).collection('myEvents').snapshots(),
         builder: (context, snapshot) {
@@ -108,6 +109,22 @@ class CalendarPage extends HookWidget {
             return Container();
           }
         }
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blue,
+        onPressed: () {
+          // FireStore.getEvent(id);
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context){
+                return AddPage();
+              })
+          );
+        },
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+        elevation: 0.0,
       ),
     );
   }

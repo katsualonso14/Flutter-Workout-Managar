@@ -39,8 +39,9 @@ class FireStore {
           uid: uid,
           email: data['email']
       );
-      CalendarPage.myAccount = myAccount;
       // TODO ユーザーの状態をもつ
+      CalendarPage.myAccount = myAccount;
+
       return true;
     } on FirebaseException catch(e) {
       print('ユーザ取得失敗: $e'); //デバッグ用
