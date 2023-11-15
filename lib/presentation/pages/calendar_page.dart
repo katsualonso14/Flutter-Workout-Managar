@@ -8,17 +8,25 @@ import 'package:flutter_workout_manager/data/models/event.dart';
 import 'package:flutter_workout_manager/data/models/user.dart';
 import 'package:flutter_workout_manager/presentation/controller/firebase.dart';
 import 'package:flutter_workout_manager/presentation/pages/add_page.dart';
+import 'package:flutter_workout_manager/presentation/state/providers.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class CalendarPage extends HookWidget {
+class CalendarPage extends HookConsumerWidget {
    CalendarPage({Key? key}) : super(key: key);
    // カレンダーフォーマット配列
    final _calendarFormat = [CalendarFormat.month, CalendarFormat.twoWeeks, CalendarFormat.week];
-   static Users? myAccount;
+   //
+
    @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final formatIndex = useState(0); // カレンダーフォーマット変更用useState
     final _focusedDay = useState(DateTime.now()); // 初期値が今日日付のuseState
+
+    //TODO: ユーザー情報を取得して、そのユーザーのイベントを取得する
+
+    final userState = ref.read(userStateProvider); // ユーザー情報取得
+    final userIdList = List.generate(userState.length, (index) => userState[index].uid); // ユーザー情報をリスト化
 
     //　イベントカウント関数
     int eventCount(value) {
@@ -33,24 +41,9 @@ class CalendarPage extends HookWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Workout Manager'),),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FireStore.firebaseUsers.doc(myAccount?.uid).collection('myEvents').snapshots(),
-        builder: (context, snapshot) {
-          if(snapshot.connectionState == ConnectionState.waiting) {
-            return  Container(
-              decoration: const BoxDecoration(color: Colors.white),
-              child: const Center(
-                  child: CircularProgressIndicator()),
-            );
-          }
-          if(snapshot.hasData) {
-            // 自分のカレンダーイベントのIDを取得
-            List<String> myEventIds = List.generate(snapshot.data!.docs.length, (index) {
-              return snapshot.data!.docs[index].id;
-            });
-            return FutureBuilder<Map<DateTime, List<Event>>?>(
+      body: FutureBuilder<Map<DateTime, List<Event>>?>(
               // calendar_eventsから自分のイベントを取得
-                future: FireStore.getEventFromIds(myEventIds),
+                future: FireStore.getEventFromIds(userIdList),
                 builder: (context, snapshot) {
                   if(snapshot.hasData) {
                     return Column(
@@ -101,15 +94,11 @@ class CalendarPage extends HookWidget {
                       ],
                     );
                   } else {
+                    print('not data');
                     return Container();
                   }
                 }
-              );
-          } else {
-            return Container();
-          }
-        }
-      ),
+              ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: () {

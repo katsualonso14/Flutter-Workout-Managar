@@ -34,7 +34,7 @@ class AddPage extends StatelessWidget {
                   Event newEvent = Event(
                     event: event,
                     eventDay: today,
-                    userid: CalendarPage.myAccount!.uid,
+                    userid: 'test',
                   );
                   FireStore.addEvent(event, newEvent); //イベント追加処理
                   _editController.clear();

@@ -39,8 +39,7 @@ class FireStore {
           uid: uid,
           email: data['email']
       );
-      // TODO ユーザーの状態をもつ
-      CalendarPage.myAccount = myAccount;
+      // CalendarPage.myAccount = myAccount;
 
       return true;
     } on FirebaseException catch(e) {

@@ -8,7 +8,7 @@ import 'package:flutter_workout_manager/presentation/pages/login.dart';
 import 'presentation/state/providers.dart';
 
 
-// ConsumerWidgetでナビゲーションバーの状態管理
+// 機能を増やした際にBottomNavigationBarItemを使用予定
 class MainApp extends ConsumerWidget {
    MainApp({Key? key}) : super(key: key);
 
