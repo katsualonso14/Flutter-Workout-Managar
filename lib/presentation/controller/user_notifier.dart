@@ -7,14 +7,13 @@ class UserNotifier extends StateNotifier<List<Users>> {
   UserNotifier() : super([]){
     // これは初期化処理１度だけ実行されます
     // ここでFirestoreの情報を取得
-    _readFirebaseDocument();
+    readFirebaseDocument();
   }
 
   // Firebaseの読み込みを行う関数
   // 対象Documentはusers
-  Future<void> _readFirebaseDocument() async {
+  Future<void> readFirebaseDocument() async {
     // まずはFirebaseを利用するためにinstanceを取得
-    // 以降設定することがないのでfinalで定義
     final store = FirebaseFirestore.instance;
     final document = await store
         .collection('users')
