@@ -15,8 +15,8 @@ class LogIn extends ConsumerWidget {
     final userEmail = ref.watch(emailProvider.state);
     final userPassword = ref.watch(passwordProvider.state);
     final infoText = ref.watch(infoTextProvider.state);
-    return Scaffold(
-        body: Center(
+
+    return Center(
           child: Container(
             padding: const EdgeInsets.all(32),
             child: Column(
@@ -96,7 +96,6 @@ class LogIn extends ConsumerWidget {
               ],
             ),
           ),
-        ),
-    );
+        );
   }
 }

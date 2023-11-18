@@ -11,9 +11,14 @@ final baseTabViewProvider = StateProvider<ViewType>((ref) => ViewType.calendar);
 enum ViewType { calendar, levelManage }
 
 // ログイン・新規登録用プロバイダー
+final userStreamProvider = StreamProvider.autoDispose<User?>((ref) {
+  return FirebaseAuth.instance.authStateChanges();
+});
+
 final emailProvider = StateProvider((ref) => '');
 final passwordProvider = StateProvider((ref) => '');
 final infoTextProvider = StateProvider((ref) => '');
+
 
 final userStateProvider = StateNotifierProvider<UserNotifier, List<Users>>( (ref) {
   return UserNotifier();

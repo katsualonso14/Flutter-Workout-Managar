@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_workout_manager/presentation/pages/level_manage_page.dart';
 import 'package:flutter_workout_manager/presentation/pages/login.dart';
+import 'package:flutter_workout_manager/presentation/state/providers.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'core/firebase_options.dart';
 
 void main() async {
@@ -12,26 +14,31 @@ void main() async {
   runApp(const ProviderScope(child: App()));
 }
 
-class App extends StatelessWidget {
+class App extends HookConsumerWidget {
   const App({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userStream = ref.watch(userStreamProvider);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: StreamBuilder(
-        // ログイン状態の確認
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const SizedBox();
-          }
-          if (snapshot.hasData) {
-            return const LevelManagePage();
-          }
-          // データがない場合ログインページへ
-          return LogIn();
-        },
+      home: Scaffold(
+        appBar: AppBar(title: const Text('Flutter Workout Manager'),),
+        body: userStream.when(
+            error: (error, stackTrace) {
+              return const Center(child: Text('エラーが発生しました'));
+            },
+            loading: () {
+              return const Center(child: CircularProgressIndicator());
+            },
+            data: (data) {
+              if (data != null) {
+                return LevelManagePage();
+              } else {
+                return LogIn();
+              }
+            }
+        ),
       ),
     );
   }
