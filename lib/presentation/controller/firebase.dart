@@ -37,7 +37,7 @@ class FireStore {
       Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
       var myAccount = Users(
           uid: uid,
-          email: data['email']
+          email: data['email'],
       );
       // CalendarPage.myAccount = myAccount;
 
@@ -48,12 +48,13 @@ class FireStore {
     }
   }
 
+
+  // MyEventの中からイベントを見つける
   static Future<Map<DateTime, List<Event>>?> getEventFromIds(List<String> ids) async {
     Map<DateTime, List<Event>> events = {};
       try{
         await Future.forEach(ids, (String id) async {
           var doc = await firebaseEvents.doc(id).get();
-
 
           final data = doc.data();
           final _eventDay = data!['date'].toDate();

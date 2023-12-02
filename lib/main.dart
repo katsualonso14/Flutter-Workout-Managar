@@ -19,12 +19,12 @@ class App extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userStream = ref.watch(userStreamProvider);
+    final userCheck = ref.watch(userCheckProvider);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(title: const Text('Flutter Workout Manager'),),
-        body: userStream.when(
+        body: userCheck.when(
             error: (error, stackTrace) {
               return const Center(child: Text('エラーが発生しました'));
             },
@@ -33,7 +33,7 @@ class App extends HookConsumerWidget {
             },
             data: (data) {
               if (data != null) {
-                return LevelManagePage();
+                return LevelManagePage(data: data);
               } else {
                 return LogIn();
               }

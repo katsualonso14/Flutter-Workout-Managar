@@ -1,5 +1,6 @@
 // 筋トレレベル管理ページ
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,7 +12,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class LevelManagePage extends HookConsumerWidget {
-  LevelManagePage({Key? key}) : super(key: key);
+  LevelManagePage({Key? key, required this.data}) : super(key: key);
+
+  final User data;
   final _calendarFormat = [
     CalendarFormat.month,
     CalendarFormat.twoWeeks,
@@ -24,9 +27,11 @@ class LevelManagePage extends HookConsumerWidget {
     final _focusedDay = useState(DateTime.now()); // 初期値が今日日付のuseState
 
     //TODO: ユーザー情報を取得して、そのユーザーのイベントを取得する
+    final user = ref.read(userStateProvider);
+    final test = ref.read(eventStateProvider.notifier).getEventFromIds(data.uid);
 
-    final user = ref.read(userStateProvider); // ユーザー情報取得
-    final userIdList = List.generate(user.length, (index) => user[index].uid); // ユーザー情報をリスト化
+
+    // 最終的に欲しい形は、<DateTime, List<Event>>のMap型
 
     //　イベントカウント関数
     int eventCount(value) {
@@ -40,6 +45,10 @@ class LevelManagePage extends HookConsumerWidget {
 
     return Column(
       children: [
+        ElevatedButton(onPressed: () async {
+          print('test: ${await test}');
+
+        }, child: Text('test')),
         TableCalendar(
             firstDay: DateTime.utc(2023, 1, 1),
             lastDay: DateTime.utc(2024, 12, 31),
@@ -50,7 +59,7 @@ class LevelManagePage extends HookConsumerWidget {
             focusedDay: _focusedDay.value,
             eventLoader: (date) {
               return [];
-              // return ev.value[date] ?? [];
+              // return event[][date] ?? [];
             },
             calendarFormat: _calendarFormat[formatIndex.value],
             // デフォルトを月表示に設定

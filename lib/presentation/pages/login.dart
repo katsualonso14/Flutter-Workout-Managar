@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_workout_manager/app.dart';
 import 'package:flutter_workout_manager/presentation/controller/firebase.dart';
+import 'package:flutter_workout_manager/presentation/pages/level_manage_page.dart';
 import '../state/providers.dart';
 
 class LogIn extends ConsumerWidget {
@@ -71,7 +72,7 @@ class LogIn extends ConsumerWidget {
                       var _result = await FireStore.getUserId(result.user!.uid);
                       if (_result == true) {
                         Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) => MainApp()));
+                            MaterialPageRoute(builder: (context) => LevelManagePage(data: result.user!)));
                       } else {
                         infoText.state = 'miss';
                       }

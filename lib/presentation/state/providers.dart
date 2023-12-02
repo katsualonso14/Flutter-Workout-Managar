@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_workout_manager/data/models/event.dart';
 import 'package:flutter_workout_manager/data/models/user.dart';
+import 'package:flutter_workout_manager/presentation/controller/event_notifier.dart';
 import 'package:flutter_workout_manager/presentation/controller/user_notifier.dart';
 
 
@@ -11,15 +13,20 @@ final baseTabViewProvider = StateProvider<ViewType>((ref) => ViewType.calendar);
 enum ViewType { calendar, levelManage }
 
 // ログイン・新規登録用プロバイダー
-final userStreamProvider = StreamProvider.autoDispose<User?>((ref) {
+final userCheckProvider = StreamProvider.autoDispose<User?>((ref) {
   return FirebaseAuth.instance.authStateChanges();
 });
 
 final emailProvider = StateProvider((ref) => '');
+
 final passwordProvider = StateProvider((ref) => '');
 final infoTextProvider = StateProvider((ref) => '');
 
 
-final userStateProvider = StateNotifierProvider<UserNotifier, List<Users>>( (ref) {
+final userStateProvider = StateNotifierProvider<UserNotifier, Users>( (ref) {
   return UserNotifier();
+});
+
+final eventStateProvider = StateNotifierProvider<EventNotifier, Event>( (ref) {
+  return EventNotifier();
 });

@@ -29,18 +29,18 @@ class AddPage extends StatelessWidget {
                   event = value;
                 },
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Event newEvent = Event(
-                    event: event,
-                    eventDay: today,
-                    userid: 'test',
-                  );
-                  FireStore.addEvent(event, newEvent); //イベント追加処理
-                  _editController.clear();
-                },
-                child: Text('イベント登録'),
-              ),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     Event newEvent = Event(
+              //       event: event,
+              //       eventDay: today,
+              //       userid: 'test',
+              //     );
+              //     FireStore.addEvent(event, newEvent); //イベント追加処理
+              //     _editController.clear();
+              //   },
+              //   child: Text('イベント登録'),
+              // ),
             ],
           )
         ),

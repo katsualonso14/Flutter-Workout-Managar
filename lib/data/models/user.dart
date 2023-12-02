@@ -6,7 +6,8 @@ class Users {
   final String email;
 
   // 今回は引数(Firestoreの情報)からインスタンスを生成
-  factory Users.toModel(String uid, Map<String, dynamic> data) {
+  factory Users.
+  toModel(String uid, Map<String, dynamic> data) {
     return Users(
         uid: uid,
         email: data['email']
