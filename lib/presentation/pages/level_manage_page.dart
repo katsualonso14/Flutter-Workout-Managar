@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_workout_manager/data/models/event.dart';
+import 'package:flutter_workout_manager/presentation/controller/event_state_notifier.dart';
 import 'package:flutter_workout_manager/presentation/controller/firebase.dart';
 import 'package:flutter_workout_manager/presentation/pages/add_page.dart';
 import 'package:flutter_workout_manager/presentation/state/providers.dart';
@@ -27,11 +28,7 @@ class LevelManagePage extends HookConsumerWidget {
     final _focusedDay = useState(DateTime.now()); // 初期値が今日日付のuseState
 
     //TODO: ユーザー情報を取得して、そのユーザーのイベントを取得する
-    final user = ref.read(userStateProvider);
-    final test = ref.read(eventStateProvider.notifier).getEventFromIds(data.uid);
-
-
-    // 最終的に欲しい形は、<DateTime, List<Event>>のMap型
+    final event = ref.watch(eventStateNotifierProvider.notifier).getEventFromIds(data.uid);
 
     //　イベントカウント関数
     int eventCount(value) {
@@ -43,23 +40,34 @@ class LevelManagePage extends HookConsumerWidget {
       }
     }
 
-    return Column(
+    useEffect((){
+      ref.read(eventStateNotifierProvider.notifier).getEventFromIds(data.uid);
+      return;
+    }, []);
+    return FutureBuilder(
+        future: event,
+        builder: (context, snapshot){
+      if (snapshot.hasError) {
+        return const Center(child: Text('エラーが発生しました'));
+      }
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      final eventData = snapshot.data as Map<DateTime, List<String>>;
+      return Column(
       children: [
-        ElevatedButton(onPressed: () async {
-          print('test: ${await test}');
-
+        ElevatedButton(onPressed: () {
+          print('test: ${eventData}');
         }, child: Text('test')),
         TableCalendar(
             firstDay: DateTime.utc(2023, 1, 1),
             lastDay: DateTime.utc(2024, 12, 31),
             onPageChanged: (focusedDay) async {
-              // print(snapshot.data!);
-              _focusedDay.value = focusedDay;
+              // _focusedDay.value = focusedDay;
             },
             focusedDay: _focusedDay.value,
             eventLoader: (date) {
-              return [];
-              // return event[][date] ?? [];
+              return eventData[date] ?? [];
             },
             calendarFormat: _calendarFormat[formatIndex.value],
             // デフォルトを月表示に設定
@@ -76,8 +84,10 @@ class LevelManagePage extends HookConsumerWidget {
             // 日付が選択されたときの処理
             onDaySelected: (selectedDay, focusedDay) {
               _focusedDay.value = focusedDay;
+              print(focusedDay);
             })
       ],
     );
+    });
   }
 }

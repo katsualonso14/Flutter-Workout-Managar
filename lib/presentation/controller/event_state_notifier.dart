@@ -1,10 +1,15 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_workout_manager/data/models/event.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-class EventNotifier extends StateNotifier<Event> {
-  EventNotifier() : super(Event(event: '', eventDay: Timestamp.now(), userid: ''));
+part 'event_state_notifier.g.dart';
+
+@riverpod
+class EventStateNotifier extends _$EventStateNotifier {
+  @override
+  Event build() {
+    return Event(event: '', eventDay: Timestamp.now(), userid: '');
+  }
 
   // FirebaseのUserコレクションからmyEventsを取得
   Future<List<String>> getMyEvents(String uid) async {
@@ -29,19 +34,25 @@ class EventNotifier extends StateNotifier<Event> {
           final data = doc.data()!;
           final event = data['event'];
           final eventDay = data['date'].toDate();
+          final date = DateTime(eventDay.year, eventDay.month, eventDay.day);
+          final eventDateTime = date.add(date.timeZoneOffset).toUtc();
 
           // 日付が同じなら同じリストに追加
-          if(events.containsKey(DateTime(eventDay.year, eventDay.month, eventDay.day))){
-            events[DateTime(eventDay.year, eventDay.month, eventDay.day)]!.add(event);
+          if(events.containsKey(eventDateTime)){
+             events[eventDateTime]!.add(event);
             return events;
           }
-          events[DateTime(eventDay.year, eventDay.month, eventDay.day)] = [event];
+           events[eventDateTime] = [event];
         });
+
+
         return events;
       } on FirebaseException catch(e) {
         print('自分の投稿取得失敗 $e'); //デバッグ用
         return null;
       }
     }
+
+
 
 }

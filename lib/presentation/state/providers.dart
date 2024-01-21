@@ -27,6 +27,6 @@ final userStateProvider = StateNotifierProvider<UserNotifier, Users>( (ref) {
   return UserNotifier();
 });
 
-final eventStateProvider = StateNotifierProvider<EventNotifier, Event>( (ref) {
-  return EventNotifier();
-});
+// final eventStateProvider = StateNotifierProvider<EventNotifier, Event>( (ref) {
+//   return EventNotifier();
+// });
