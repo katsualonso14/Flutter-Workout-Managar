@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_workout_manager/data/models/event.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -21,7 +22,8 @@ class EventStateNotifier extends _$EventStateNotifier {
   }
 
     // Firebase一致したものを取得　
-    Future<Map<DateTime, List<String>>?> getEventFromIds(String id) async {
+    Future<Map<DateTime, List<String>>?>
+    getEventFromIds(String id) async {
 
       Map<DateTime, List<String>> events = {};
       final myEvents = await getMyEvents(id);
@@ -39,7 +41,7 @@ class EventStateNotifier extends _$EventStateNotifier {
 
           // 日付が同じなら同じリストに追加
           if(events.containsKey(eventDateTime)){
-             events[eventDateTime]!.add(event);
+             events[eventDateTime]!.add(event) ;
             return events;
           }
            events[eventDateTime] = [event];
