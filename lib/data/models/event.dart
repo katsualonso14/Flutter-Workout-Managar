@@ -1,12 +1,14 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-//イベントクラス
-class Event {
-  String event;
-  Timestamp eventDay;
-  String userid;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  Event({required this.event, required this.eventDay, required this.userid});
+part 'event.freezed.dart';
+
+@freezed
+abstract class Event with _$Event {
+  const factory Event({
+    required String event,
+    required Timestamp eventDay,
+    required String userid,
+  }) = _Event;
 }
-
-
