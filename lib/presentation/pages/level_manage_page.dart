@@ -22,17 +22,23 @@ class LevelManagePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formatIndex = useState(0); // カレンダーフォーマット変更用useState
+    final formatIndex = useState(0); // カレンダーフォーマット変更用
     final _focusedDay = useState(DateTime.now()); // 初期値が今日日付のuseState
     final eventStateNotifier = ref.watch(eventStateNotifierProvider.notifier);
     final eventData = useState<Map<DateTime, List<String>>?>(null);
-    // final eventData = eventStateNotifier.getEventFromIds(data.uid);
+    final isLoading = useState(true); // ローディング用フラグ
+
+    // データを取得してeventDataを更新する関数
+    Future<void> fetchEventData() async {
+      isLoading.value = true;
+      final getData = await eventStateNotifier.getEventFromIds(data.uid);
+      eventData.value = getData;
+      isLoading.value = false;
+    }
 
     useEffect(() {
       // 初回データ取得
-      eventStateNotifier.getEventFromIds(data.uid).then((value) {
-        eventData.value = value;
-      });
+      fetchEventData();
       return;
     },const []);
 
@@ -46,7 +52,7 @@ class LevelManagePage extends HookConsumerWidget {
       }
     }
 
-    return eventData.value == null
+    return isLoading.value
         ? const Center(child: CircularProgressIndicator())
         : Scaffold(
             body: Column(
@@ -94,11 +100,15 @@ class LevelManagePage extends HookConsumerWidget {
             ),
             floatingActionButton: FloatingActionButton(
               backgroundColor: Colors.blue,
-              onPressed: () {
-                Navigator.of(context)
+              onPressed: () async {
+                final result = await Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
                   return AddPage(uid: data.uid);
                 }));
+
+                if (result == true) {
+                  await fetchEventData();
+                }
               },
               elevation: 0.0,
               child: const Icon(

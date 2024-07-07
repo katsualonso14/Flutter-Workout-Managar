@@ -28,7 +28,7 @@ class EventStateNotifier extends _$EventStateNotifier {
       final myEvents = await getMyEvents(id);
 
       try{
-        Future.forEach(myEvents, (String element) async {
+        for(String element in myEvents){
           final firebaseEvents =  FirebaseFirestore.instance.collection('calendar_events');
           final doc = await firebaseEvents.doc(element).get();
 
@@ -41,12 +41,10 @@ class EventStateNotifier extends _$EventStateNotifier {
           // 日付が同じなら同じリストに追加
           if(events.containsKey(eventDateTime)){
              events[eventDateTime]!.add(event) ;
-            return events;
-
+          } else {
+            events[eventDateTime] = [event];
           }
-           events[eventDateTime] = [event];
-        });
-
+        }
 
         return events;
       } on FirebaseException catch(e) {

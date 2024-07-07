@@ -42,7 +42,9 @@ class AddPage extends HookConsumerWidget {
                   await ref.read(eventStateNotifierProvider.notifier).addEvent(event, newEvent);
                   _editController.clear();
                   // ignore: use_build_context_synchronously
-                  Navigator.of(context).pop();
+                  // trueを渡しデータ更新実施
+
+                  Navigator.of(context).pop(true);
                 },
 
                 child: const Text('イベント登録'),
