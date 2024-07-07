@@ -22,8 +22,7 @@ class EventStateNotifier extends _$EventStateNotifier {
   }
 
     // Firebase一致したものを取得　
-    Future<Map<DateTime, List<String>>?>
-    getEventFromIds(String id) async {
+    Future<Map<DateTime, List<String>>?> getEventFromIds(String id) async {
 
       Map<DateTime, List<String>> events = {};
       final myEvents = await getMyEvents(id);
@@ -43,6 +42,7 @@ class EventStateNotifier extends _$EventStateNotifier {
           if(events.containsKey(eventDateTime)){
              events[eventDateTime]!.add(event) ;
             return events;
+
           }
            events[eventDateTime] = [event];
         });
@@ -55,6 +55,24 @@ class EventStateNotifier extends _$EventStateNotifier {
       }
     }
 
+    // イベントを追加
+    Future<void>
+    addEvent(String event, Event newEvent) async {
+      final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
+      final firebaseUsers = FirebaseFirestore.instance.collection('users');
+      final userEvent = firebaseUsers.doc(newEvent.userid).collection('myEvents');
+
+      final result = await firebaseEvents.add({
+        'date': Timestamp.fromDate(DateTime.now()),
+        'event': event,
+        'userid': newEvent.userid,
+      });
+
+      userEvent.doc(result.id).set({
+        'eventTime': Timestamp.fromDate(DateTime.now()),
+        'event_id': result.id,
+      });
+    }
 
 
 }
