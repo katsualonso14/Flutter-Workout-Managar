@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_workout_manager/app.dart';
 import 'package:flutter_workout_manager/presentation/controller/firebase.dart';
-import 'package:flutter_workout_manager/presentation/pages/level_manage_page.dart';
+import 'package:flutter_workout_manager/presentation/pages/calender_page.dart';
 import '../state/providers.dart';
 
 class LogIn extends ConsumerWidget {
-  LogIn({Key? key}) : super(key: key);
+  const LogIn({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,13 +23,13 @@ class LogIn extends ConsumerWidget {
           children: <Widget>[
             TextFormField(
               // テキスト入力のラベルを設定
-              decoration: InputDecoration(labelText: "メールアドレス"),
+              decoration: const InputDecoration(labelText: "メールアドレス"),
               onChanged: (String value) {
                 userEmail.state = value;
               },
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: "パスワード（６文字以上）"),
+              decoration: const InputDecoration(labelText: "パスワード（６文字以上）"),
               // パスワードが見えないようにする
               obscureText: true,
               onChanged: (String value) {
@@ -58,21 +58,22 @@ class LogIn extends ConsumerWidget {
                       infoText.state = '登録NG：${e.toString()}';
                     }
                   },
-                  child: Text('ユーザー登録')),
+                  child: const Text('ユーザー登録')),
             ),
-            Container(
+            SizedBox(
               width: double.infinity,
               child: OutlinedButton(
-                child: Text('ログイン'),
+                child: const Text('ログイン'),
                 onPressed: () async {
                   try {
                     var result = await FireStore.signIn(
                         email: userEmail.state, password: userPassword.state);
                     if (result is UserCredential) {
-                      var _result = await FireStore.getUserId(result.user!.uid);
-                      if (_result == true) {
+                      var userId = await FireStore.getUserId(result.user!.uid);
+                      if (userId == true) {
+                        // ignore: use_build_context_synchronously
                         Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) => LevelManagePage(data: result.user!)));
+                            MaterialPageRoute(builder: (context) => CalenderPage(data: result.user!)));
                       } else {
                         infoText.state = 'miss';
                       }

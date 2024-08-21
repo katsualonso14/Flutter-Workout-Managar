@@ -4,22 +4,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_workout_manager/data/models/event.dart';
 import 'package:flutter_workout_manager/presentation/controller/event_state_notifier.dart';
-import 'package:flutter_workout_manager/presentation/pages/calendar_page.dart';
-import 'package:flutter_workout_manager/presentation/pages/level_manage_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../controller/firebase.dart';
 
 class AddPage extends HookConsumerWidget {
-  AddPage({Key? key, required this.uid}) : super(key: key);
+  const AddPage({Key? key, required this.uid}) : super(key: key);
   final String uid;
-
-  final today = Timestamp.fromDate(DateTime.now());
-  var event = '';
-  final _editController = TextEditingController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final today = Timestamp.fromDate(DateTime.now());
+    var event = '';
+    final editController = TextEditingController();
+
     return  Scaffold(
       appBar: AppBar(),
         body: Center(
@@ -27,7 +24,7 @@ class AddPage extends HookConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextField(
-                controller: _editController,
+                controller: editController,
                 onChanged: (value) {
                   event = value;
                 },
@@ -40,8 +37,7 @@ class AddPage extends HookConsumerWidget {
                     userid: uid,
                   );
                   await ref.read(eventStateNotifierProvider.notifier).addEvent(event, newEvent);
-                  _editController.clear();
-                  // ignore: use_build_context_synchronously
+                  editController.clear();
                   // trueを渡しデータ更新実施
 
                   Navigator.of(context).pop(true);

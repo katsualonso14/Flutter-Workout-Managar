@@ -9,8 +9,8 @@ import 'package:flutter_workout_manager/presentation/pages/add_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class LevelManagePage extends HookConsumerWidget {
-  LevelManagePage({Key? key, required this.data}) : super(key: key);
+class CalenderPage extends HookConsumerWidget {
+  CalenderPage({Key? key, required this.data}) : super(key: key);
 
   final User data;
   final _calendarFormat = [
@@ -60,15 +60,11 @@ class LevelManagePage extends HookConsumerWidget {
                 TableCalendar(
                     firstDay: DateTime.utc(2023, 1, 1),
                     lastDay: DateTime.utc(2024, 12, 31),
-                    onPageChanged: (focusedDay) {
-                      _focusedDay.value = focusedDay;
-                    },
                     focusedDay: _focusedDay.value,
                     eventLoader: (date) {
                       return eventData.value![date] ?? [];
                     },
                     calendarFormat: _calendarFormat[formatIndex.value],
-
                     onFormatChanged: (format) {
                       if (formatIndex.value != format.index) {
                         formatIndex.value = format.index;
