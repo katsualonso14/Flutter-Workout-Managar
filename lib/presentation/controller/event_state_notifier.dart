@@ -22,14 +22,13 @@ class EventStateNotifier extends _$EventStateNotifier {
   }
 
     // Firebase一致したものを取得　
-    Future<Map<DateTime, List<String>>?>
-    getEventFromIds(String id) async {
+    Future<Map<DateTime, List<String>>?> getEventFromIds(String id) async {
 
       Map<DateTime, List<String>> events = {};
       final myEvents = await getMyEvents(id);
 
       try{
-        Future.forEach(myEvents, (String element) async {
+        for(String element in myEvents){
           final firebaseEvents =  FirebaseFirestore.instance.collection('calendar_events');
           final doc = await firebaseEvents.doc(element).get();
 
@@ -42,11 +41,10 @@ class EventStateNotifier extends _$EventStateNotifier {
           // 日付が同じなら同じリストに追加
           if(events.containsKey(eventDateTime)){
              events[eventDateTime]!.add(event) ;
-            return events;
+          } else {
+            events[eventDateTime] = [event];
           }
-           events[eventDateTime] = [event];
-        });
-
+        }
 
         return events;
       } on FirebaseException catch(e) {
@@ -55,6 +53,24 @@ class EventStateNotifier extends _$EventStateNotifier {
       }
     }
 
+    // イベントを追加
+    Future<void>
+    addEvent(String event, Event newEvent) async {
+      final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
+      final firebaseUsers = FirebaseFirestore.instance.collection('users');
+      final userEvent = firebaseUsers.doc(newEvent.userid).collection('myEvents');
+
+      final result = await firebaseEvents.add({
+        'date': Timestamp.fromDate(DateTime.now()),
+        'event': event,
+        'userid': newEvent.userid,
+      });
+
+      userEvent.doc(result.id).set({
+        'eventTime': Timestamp.fromDate(DateTime.now()),
+        'event_id': result.id,
+      });
+    }
 
 
 }

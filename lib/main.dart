@@ -1,8 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_workout_manager/presentation/pages/level_manage_page.dart';
+import 'package:flutter_workout_manager/presentation/pages/calender_page.dart';
 import 'package:flutter_workout_manager/presentation/pages/login.dart';
 import 'package:flutter_workout_manager/presentation/state/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -33,9 +31,9 @@ class App extends HookConsumerWidget {
             },
             data: (data) {
               if (data != null) {
-                return LevelManagePage(data: data);
+                return CalenderPage(data: data);
               } else {
-                return LogIn();
+                return const LogIn();
               }
             }
         ),
