@@ -9,9 +9,8 @@ class MyAdBanner extends HookWidget {
   Widget build(BuildContext context) {
 
     BannerAd? bannerAd;
-    var isAdLoaded = useState(false);
-
-    final bannerId = 'ca-app-pub-2751119101175618/6568260509';
+    var isAdLoaded = useState(false); // 広告の読み込み状態
+    const bannerId = 'ca-app-pub-2751119101175618/6568260509'; // 広告ID
 
     // ad load
     void loadAd(){
