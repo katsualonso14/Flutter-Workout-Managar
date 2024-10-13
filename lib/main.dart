@@ -119,8 +119,38 @@ class App extends HookConsumerWidget {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Workout Manager'),
+
           actions: [
-            // アカウント削除
+            // ログインアウトボタン
+            IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('ログアウト'),
+                        content: const Text('はいをタップするとログイン画面に戻ります。\n本当にログアウトしますか？'),
+                        actions: [
+                          TextButton(
+                            onPressed: () async {
+                              await FirebaseAuth.instance.signOut();
+                              Navigator.pop(context);
+                            },
+                            child: const Text('はい'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('いいえ'),
+                          ),
+                        ],
+                      );
+                    }
+                );
+              },
+            ),
             IconButton(
               icon: const Icon(Icons.delete),
               onPressed: () {
@@ -150,6 +180,7 @@ class App extends HookConsumerWidget {
                 );
               },
             ),
+
           ],
         ),
 
