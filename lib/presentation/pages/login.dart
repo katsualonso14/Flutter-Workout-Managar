@@ -51,10 +51,10 @@ class LogIn extends ConsumerWidget {
 
                       // 登録したユーザー情報
                       final User? user = result.user;
-                      infoText.state = '登録OK：${user!.email}';
+                      infoText.state = '以下のEメールアドレスにて登録が完了いたしました。\n${user!.email}';
                     } catch (e) {
                       // 登録に失敗した場合
-                      infoText.state = '登録NG：${e.toString()}';
+                      infoText.state = '登録に失敗いたしました。再度お試しください。\n※パスワードは６文字以上で入力してください。\n※メールアドレスは正しい形式で入力してください。';
                     }
                   },
                   child: const Text('ユーザー登録')),
@@ -67,6 +67,7 @@ class LogIn extends ConsumerWidget {
                   try {
                     var result = await FireStore.signIn(
                         email: userEmail.state, password: userPassword.state);
+
                     if (result is UserCredential) {
                       var userId = await FireStore.getUserId(result.user!.uid);
                       if (userId == true) {
@@ -74,8 +75,10 @@ class LogIn extends ConsumerWidget {
                         Navigator.pushReplacement(context,
                             MaterialPageRoute(builder: (context) => CalenderPage(data: result.user!)));
                       } else {
-                        infoText.state = 'miss';
+                        infoText.state = 'ログインに失敗しました。再度お試しください。\n※パスワードは６文字以上で入力してください。\n※メールアドレスは正しい形式で入力してください。';
                       }
+                    } else {
+                      infoText.state = 'ログインに失敗しました。再度お試しください。\n※パスワードは６文字以上で入力してください。\n※メールアドレスは正しい形式で入力してください。';
                     }
 
                     // カレンダーページに遷移 TODO NabBar付きで遷移させる
@@ -85,7 +88,7 @@ class LogIn extends ConsumerWidget {
                     //     })
                     // );
                   } catch (e) {
-                    infoText.state = 'ログイン失敗: ${e.toString()}';
+                    infoText.state = 'ログインに失敗しました。再度お試しください。\n※パスワードは６文字以上で入力してください。\n※メールアドレスは正しい形式で入力してください。';
                     print(infoText.state);
                   }
                 },
