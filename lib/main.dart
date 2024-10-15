@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_workout_manager/presentation/pages/calender_page.dart';
 import 'package:flutter_workout_manager/presentation/pages/login.dart';
 import 'package:flutter_workout_manager/presentation/state/providers.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'core/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const ProviderScope(
       child: MaterialApp(debugShowCheckedModeBanner: false, home: App())));
@@ -117,8 +119,38 @@ class App extends HookConsumerWidget {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Workout Manager'),
+
           actions: [
-            // アカウント削除
+            // ログインアウトボタン
+            IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('ログアウト'),
+                        content: const Text('はいをタップするとログイン画面に戻ります。\n本当にログアウトしますか？'),
+                        actions: [
+                          TextButton(
+                            onPressed: () async {
+                              await FirebaseAuth.instance.signOut();
+                              Navigator.pop(context);
+                            },
+                            child: const Text('はい'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('いいえ'),
+                          ),
+                        ],
+                      );
+                    }
+                );
+              },
+            ),
             IconButton(
               icon: const Icon(Icons.delete),
               onPressed: () {
@@ -148,6 +180,7 @@ class App extends HookConsumerWidget {
                 );
               },
             ),
+
           ],
         ),
 

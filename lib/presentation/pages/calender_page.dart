@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_workout_manager/presentation/controller/event_state_notifier.dart';
 import 'package:flutter_workout_manager/presentation/pages/add_page.dart';
+import 'package:flutter_workout_manager/presentation/widgets/my_ad_banner.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -92,24 +93,28 @@ class CalenderPage extends HookConsumerWidget {
                     },
                   ),
                 ),
+                 MyAdBanner()
               ],
             ),
-            floatingActionButton: FloatingActionButton(
-              backgroundColor: Colors.blue,
-              onPressed: () async {
-                final result = await Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return AddPage(uid: data.uid);
-                }));
+            floatingActionButton: Padding(
+              padding: const EdgeInsets.only(bottom: 30.0),
+              child: FloatingActionButton(
+                backgroundColor: Colors.blue,
+                onPressed: () async {
+                  final result = await Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return AddPage(uid: data.uid);
+                  }));
 
-                if (result == true) {
-                  await fetchEventData();
-                }
-              },
-              elevation: 0.0,
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
+                  if (result == true) {
+                    await fetchEventData();
+                  }
+                },
+                elevation: 0.0,
+                child: const Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ),
               ),
             ),
           );
