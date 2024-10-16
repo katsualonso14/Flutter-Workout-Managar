@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_workout_manager/presentation/controller/firebase.dart';
 import 'package:flutter_workout_manager/presentation/pages/calender_page.dart';
+import 'package:flutter_workout_manager/presentation/pages/no_login_calender_page.dart';
 import '../state/providers.dart';
 
 class LogIn extends ConsumerWidget {
@@ -80,13 +81,6 @@ class LogIn extends ConsumerWidget {
                     } else {
                       infoText.state = 'ログインに失敗しました。再度お試しください。\n※パスワードは６文字以上で入力してください。\n※メールアドレスは正しい形式で入力してください。';
                     }
-
-                    // カレンダーページに遷移 TODO NabBar付きで遷移させる
-                    // await Navigator.of(context).pushReplacement(
-                    //     MaterialPageRoute(builder: (context) {
-                    //       return MainApp();
-                    //     })
-                    // );
                   } catch (e) {
                     infoText.state = 'ログインに失敗しました。再度お試しください。\n※パスワードは６文字以上で入力してください。\n※メールアドレスは正しい形式で入力してください。';
                     print(infoText.state);
@@ -94,6 +88,15 @@ class LogIn extends ConsumerWidget {
                 },
               ),
             ),
+            OutlinedButton(
+              child: const Text('ログインなしでカレンダー機能の確認', style: TextStyle(color: Colors.grey)),
+
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => const NoLoginCalendarPage()));
+                }
+            ),
+
             Text(infoText.state),
           ],
         ),
