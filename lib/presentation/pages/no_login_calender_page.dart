@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_workout_manager/presentation/widgets/my_ad_banner.dart';
 import 'package:flutter_workout_manager/presentation/widgets/no_login_alert_dialog.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -60,6 +61,7 @@ class NoLoginCalendarPage extends HookWidget {
               },
             ),
           ),
+          const MyAdBanner(),
         ],
       ),
       floatingActionButton: Padding(
