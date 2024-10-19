@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_workout_manager/data/models/event.dart';
 import 'package:flutter_workout_manager/presentation/controller/event_state_notifier.dart';
+import 'package:flutter_workout_manager/presentation/widgets/my_ad_banner.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 
@@ -21,8 +22,11 @@ class AddPage extends HookConsumerWidget {
       appBar: AppBar(),
         body: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              const SizedBox(
+                height: 100,
+              ),
               TextField(
                 controller: editController,
                 onChanged: (value) {
@@ -45,6 +49,7 @@ class AddPage extends HookConsumerWidget {
 
                 child: const Text('イベント登録'),
               ),
+              const MyAdBanner(),
             ],
           )
         ),
