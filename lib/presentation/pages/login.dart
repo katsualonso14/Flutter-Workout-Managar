@@ -4,7 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_workout_manager/presentation/controller/firebase.dart';
 import 'package:flutter_workout_manager/presentation/pages/calender_page.dart';
 import 'package:flutter_workout_manager/presentation/pages/no_login_calender_page.dart';
-import '../state/providers.dart';
+import 'package:flutter_workout_manager/presentation/state/providers.dart';
+import 'package:flutter_workout_manager/presentation/widgets/my_ad_banner.dart';
+
+
 
 class LogIn extends ConsumerWidget {
   const LogIn({Key? key}) : super(key: key);
@@ -98,6 +101,7 @@ class LogIn extends ConsumerWidget {
             ),
 
             Text(infoText.state),
+          const MyAdBanner(),
           ],
         ),
       ),
