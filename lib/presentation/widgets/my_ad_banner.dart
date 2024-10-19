@@ -8,13 +8,13 @@ class MyAdBanner extends HookWidget {
 
   Widget build(BuildContext context) {
 
-    BannerAd? bannerAd;
+    final bannerAd = useState<BannerAd?>(null);
     var isAdLoaded = useState(false); // 広告の読み込み状態
     const bannerId = 'ca-app-pub-2751119101175618/6568260509'; // 広告ID
 
     // ad load
     void loadAd(){
-      bannerAd = BannerAd(
+      final ad = BannerAd(
         adUnitId: bannerId,
         size: AdSize.banner,
         request: const AdRequest(),
@@ -29,21 +29,24 @@ class MyAdBanner extends HookWidget {
           },
         ),
       );
-      bannerAd!.load();
+      ad.load();
+      bannerAd.value = ad;
     }
 
     useEffect((){
       loadAd();
-      return null;
+      return () {
+        bannerAd.value?.dispose();
+      };
     }, []);
 
-    return isAdLoaded.value && bannerAd != null
+    return isAdLoaded.value && bannerAd.value != null
         ? Padding(
       padding: const EdgeInsets.only(bottom: 10.0),
       child: SizedBox(
-        width: bannerAd!.size.width.toDouble(),
-        height: bannerAd!.size.height.toDouble(),
-        child: AdWidget(ad: bannerAd!),
+        width: bannerAd.value!.size.width.toDouble(),
+        height: bannerAd.value!.size.height.toDouble(),
+        child: AdWidget(ad: bannerAd.value!),
       ),
     )
         : const SizedBox.shrink();
