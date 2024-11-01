@@ -46,9 +46,9 @@ class AddPage extends HookConsumerWidget {
 
                   Navigator.of(context).pop(true);
                 },
-
                 child: const Text('イベント登録'),
               ),
+              const SizedBox(height: 70),
               const MyAdBanner(),
             ],
           )
