@@ -93,29 +93,30 @@ class CalenderPage extends HookConsumerWidget {
                     },
                   ),
                 ),
-                 MyAdBanner()
-              ],
-            ),
-            floatingActionButton: Padding(
-              padding: const EdgeInsets.only(bottom: 30.0),
-              child: FloatingActionButton(
-                backgroundColor: Colors.blue,
-                onPressed: () async {
-                  final result = await Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return AddPage(uid: data.uid);
-                  }));
+                SizedBox(
+                  width: 250,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                    ),
+                    onPressed: () async {
+                      final result = await Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return AddPage(uid: data.uid);
+                      }));
 
-                  if (result == true) {
-                    await fetchEventData();
-                  }
-                },
-                elevation: 0.0,
-                child: const Icon(
-                  Icons.add,
-                  color: Colors.white,
+                      if (result == true) {
+                        await fetchEventData();
+                      }
+                    },
+                    child: const Icon(
+                      Icons.add,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-              ),
+                 const MyAdBanner()
+              ],
             ),
           );
   }

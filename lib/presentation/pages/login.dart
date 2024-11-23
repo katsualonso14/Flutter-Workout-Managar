@@ -103,7 +103,7 @@ class LogIn extends ConsumerWidget {
                 ),
 
                 Text(infoText.state),
-              // const MyAdBanner(),
+              const MyAdBanner(),
               ],
             ),
           ),
