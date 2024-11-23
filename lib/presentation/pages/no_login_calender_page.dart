@@ -61,27 +61,28 @@ class NoLoginCalendarPage extends HookWidget {
               },
             ),
           ),
+          SizedBox(
+            width: 250,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+              ),
+              onPressed: ()  {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return const NoLoginAlertDialog();
+                    }
+                );
+              },
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            ),
+          ),
           const MyAdBanner(),
         ],
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 30.0),
-        child: FloatingActionButton(
-          backgroundColor: Colors.blue,
-          onPressed: () async {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return const NoLoginAlertDialog();
-                }
-            );
-          },
-          elevation: 0.0,
-          child: const Icon(
-            Icons.add,
-            color: Colors.white,
-          ),
-        ),
       ),
     );
   }
