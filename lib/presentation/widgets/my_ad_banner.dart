@@ -49,6 +49,6 @@ class MyAdBanner extends HookWidget {
         child: AdWidget(ad: bannerAd.value!),
       ),
     )
-        : const SizedBox.shrink();
+        : const SizedBox(width: 320, height: 50);
   }
 }

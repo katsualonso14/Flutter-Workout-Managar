@@ -127,9 +127,16 @@ class CalenderPage extends HookConsumerWidget {
                       if (index >= events.length) {
                         return const SizedBox.shrink();
                       }
-                      return Card(
-                        child: ListTile(
-                          title: Text(events[index]),
+                      return Dismissible(
+                        key: Key(events[index]),
+                        onDismissed: (direction) async {
+                          await eventStateNotifier.deleteEvent(data.uid, events[index]);
+                          await fetchEventData();
+                        },
+                        child: Card(
+                          child: ListTile(
+                            title: Text(events[index]),
+                          ),
                         ),
                       );
                     },
@@ -147,7 +154,7 @@ class CalenderPage extends HookConsumerWidget {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Colors.deepPurple,
                     shape: const CircleBorder(),
                     padding: const EdgeInsets.all(20),
                   ),
