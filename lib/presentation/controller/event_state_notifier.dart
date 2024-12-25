@@ -54,19 +54,19 @@ class EventStateNotifier extends _$EventStateNotifier {
     }
 
     // イベントを追加
-    Future<void> addEvent(String event, Event newEvent) async {
+    Future<void> addEvent(String event, Event newEvent, Timestamp eventDate) async {
       final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
       final firebaseUsers = FirebaseFirestore.instance.collection('users');
       final userEvent = firebaseUsers.doc(newEvent.userid).collection('myEvents');
 
       final result = await firebaseEvents.add({
-        'date': Timestamp.fromDate(DateTime.now()),
+        'date': eventDate,
         'event': event,
         'userid': newEvent.userid,
       });
 
       userEvent.doc(result.id).set({
-        'eventTime': Timestamp.fromDate(DateTime.now()),
+        'eventTime': eventDate,
         'event_id': result.id,
       });
     }

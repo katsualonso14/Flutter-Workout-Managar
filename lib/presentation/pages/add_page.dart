@@ -8,16 +8,17 @@ import 'package:flutter_workout_manager/data/models/event.dart';
 import 'package:flutter_workout_manager/data/models/eventTiles.dart';
 import 'package:flutter_workout_manager/presentation/controller/event_state_notifier.dart';
 import 'package:flutter_workout_manager/presentation/widgets/my_ad_banner.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 
 class AddPage extends HookConsumerWidget {
-  const AddPage({Key? key, required this.uid}) : super(key: key);
+  const AddPage({Key? key, required this.uid, required this.selectedDay}) : super(key: key);
   final String uid;
+  final Timestamp selectedDay;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final today = Timestamp.fromDate(DateTime.now());
     var event = '';
     final editController = TextEditingController();
     var pickerMenu = useState(eventTitles.first);
@@ -50,11 +51,14 @@ class AddPage extends HookConsumerWidget {
                 onPressed: () async {
                   Event newEvent = Event(
                     event: pickerMenu.value == 'Other (Please Specify)' ? event : pickerMenu.value,
-                    eventDay: today,
+                    eventDay: selectedDay,
                     userid: uid,
                   );
                   await ref.read(eventStateNotifierProvider.notifier).addEvent(
-                      pickerMenu.value == 'Other (Please Specify)' ? event : pickerMenu.value, newEvent);
+                       pickerMenu.value == 'Other (Please Specify)' ? event : pickerMenu.value,
+                       newEvent,
+                      selectedDay
+                  );
                   editController.clear();
                   // trueを渡しデータ更新実施
                   Navigator.of(context).pop(true);
