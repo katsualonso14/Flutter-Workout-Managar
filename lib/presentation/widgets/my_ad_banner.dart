@@ -10,7 +10,7 @@ class MyAdBanner extends HookWidget {
 
     final bannerAd = useState<BannerAd?>(null);
     var isAdLoaded = useState(false); // 広告の読み込み状態
-    const bannerId = 'ca-app-pub-2751119101175618/6568260509'; // 広告ID
+    const bannerId = 'ca-app-pub-2751119101175618/5283502914'; // 広告ID
 
     // ad load
     void loadAd(){
@@ -49,6 +49,6 @@ class MyAdBanner extends HookWidget {
         child: AdWidget(ad: bannerAd.value!),
       ),
     )
-        : const SizedBox.shrink();
+        : const SizedBox(width: 320, height: 50);
   }
 }

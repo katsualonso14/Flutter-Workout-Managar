@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_workout_manager/presentation/controller/event_state_notifier.dart';
 import 'package:flutter_workout_manager/presentation/pages/add_page.dart';
 import 'package:flutter_workout_manager/presentation/widgets/my_ad_banner.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -20,7 +21,6 @@ class CalenderPage extends HookConsumerWidget {
     CalendarFormat.week
   ];
 
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formatIndex = useState(0); // カレンダーフォーマット変更用
@@ -28,6 +28,38 @@ class CalenderPage extends HookConsumerWidget {
     final eventStateNotifier = ref.watch(eventStateNotifierProvider.notifier);
     final eventData = useState<Map<DateTime, List<String>>?>(null);
     final isLoading = useState(true); // ローディング用フラグ
+
+    String interstitialAdUId = 'ca-app-pub-2751119101175618/8292777815';
+    var interstitialAd = useState<InterstitialAd?>(null);
+
+    void loadAd() {
+      InterstitialAd.load(
+        adUnitId: interstitialAdUId,
+        request: const AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(
+          onAdLoaded: (ad) {
+            interstitialAd.value = ad;
+            interstitialAd.value!.fullScreenContentCallback = FullScreenContentCallback(
+              onAdShowedFullScreenContent: (ad) {},
+              onAdDismissedFullScreenContent: (ad) {
+                debugPrint('ad onAdDismissedFullScreenContent.');
+                ad.dispose();
+                loadAd();
+              },
+              onAdFailedToShowFullScreenContent: (ad, error) {
+                debugPrint('ad onAdFailedToShowFullScreenContent.');
+                ad.dispose();
+                loadAd();
+              },
+            );
+          },
+          // Called when an ad request failed.
+          onAdFailedToLoad: (LoadAdError error) {
+            debugPrint('InterstitialAd failed to load: $error');
+          },
+        ),
+      );
+    }
 
     // データを取得してeventDataを更新する関数
     Future<void> fetchEventData() async {
@@ -40,7 +72,17 @@ class CalenderPage extends HookConsumerWidget {
     useEffect(() {
       // 初回データ取得
       fetchEventData();
-      return;
+      loadAd();
+
+      Future.delayed(const Duration(seconds: 4), () {
+        if(interstitialAd.value != null) {
+          interstitialAd.value!.show();
+        }
+      });
+
+      return () {
+        interstitialAd.value?.dispose();
+      };
     },const []);
 
     //　イベントカウント関数
@@ -85,36 +127,43 @@ class CalenderPage extends HookConsumerWidget {
                       if (index >= events.length) {
                         return const SizedBox.shrink();
                       }
-                      return Card(
-                        child: ListTile(
-                          title: Text(events[index]),
+                      return Dismissible(
+                        key: Key(events[index]),
+                        onDismissed: (direction) async {
+                          await eventStateNotifier.deleteEvent(data.uid, events[index]);
+                          await fetchEventData();
+                        },
+                        child: Card(
+                          child: ListTile(
+                            title: Text(events[index]),
+                          ),
                         ),
                       );
                     },
                   ),
                 ),
-                SizedBox(
-                  width: 250,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                    ),
-                    onPressed: () async {
-                      final result = await Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return AddPage(uid: data.uid);
-                      }));
+                ElevatedButton(
+                  onPressed: () async {
+                    final result = await Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return AddPage(uid: data.uid);
+                    }));
 
-                      if (result == true) {
-                        await fetchEventData();
-                      }
-                    },
-                    child: const Icon(
-                      Icons.add,
-                      color: Colors.white,
-                    ),
+                    if (result == true) {
+                      await fetchEventData();
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(20),
+                  ),
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
                   ),
                 ),
+                 const SizedBox(height: 10),
                  const MyAdBanner()
               ],
             ),

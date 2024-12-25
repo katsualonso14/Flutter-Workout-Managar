@@ -118,8 +118,7 @@ class App extends HookConsumerWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Workout Manager'),
-
+          title: const Text('Home Fitness Manager', style: TextStyle(color: Colors.blue, fontStyle: FontStyle.italic)),
           actions: [
             // ログインアウトボタン
             IconButton(

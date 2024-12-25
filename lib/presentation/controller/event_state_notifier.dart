@@ -54,8 +54,7 @@ class EventStateNotifier extends _$EventStateNotifier {
     }
 
     // イベントを追加
-    Future<void>
-    addEvent(String event, Event newEvent) async {
+    Future<void> addEvent(String event, Event newEvent) async {
       final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
       final firebaseUsers = FirebaseFirestore.instance.collection('users');
       final userEvent = firebaseUsers.doc(newEvent.userid).collection('myEvents');
@@ -72,5 +71,15 @@ class EventStateNotifier extends _$EventStateNotifier {
       });
     }
 
-
+    // イベントを削除
+    Future<void> deleteEvent(String uid, String eventName) async {
+      final firebaseUsers = FirebaseFirestore.instance.collection('users');
+      final userEvent = firebaseUsers.doc(uid).collection('myEvents');
+      final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
+      // イベント名が一致するものを取得
+      final event = await firebaseEvents.where('event', isEqualTo: eventName).get();
+      final docs = event.docs.first; // 一致したものの最初のものだけ削除(同じ名前のイベントは削除しない)
+      await userEvent.doc(docs.id).delete();
+      await firebaseEvents.doc(docs.id).delete();
+    }
 }
