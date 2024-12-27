@@ -8,7 +8,6 @@ import 'package:flutter_workout_manager/data/models/event.dart';
 import 'package:flutter_workout_manager/data/models/eventTiles.dart';
 import 'package:flutter_workout_manager/presentation/controller/event_state_notifier.dart';
 import 'package:flutter_workout_manager/presentation/widgets/my_ad_banner.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 

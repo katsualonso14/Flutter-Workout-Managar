@@ -13,10 +13,9 @@ class EventStateNotifier extends _$EventStateNotifier {
   }
 
   // FirebaseのUserコレクションからmyEventsを取得
-  Future<List<String>> getMyEvents(String uid) async {
+  Future<List<String>> getMyEventIds(String uid) async {
     final myEvents = await FirebaseFirestore.instance.collection('users').doc(uid).collection('myEvents').get();
     final event = myEvents.docs.map((e) => e.id).toList();
-
     return event;
 
   }
@@ -25,7 +24,7 @@ class EventStateNotifier extends _$EventStateNotifier {
     Future<Map<DateTime, List<String>>?> getEventFromIds(String id) async {
 
       Map<DateTime, List<String>> events = {};
-      final myEvents = await getMyEvents(id);
+      final myEvents = await getMyEventIds(id);
 
       try{
         for(String element in myEvents){
@@ -81,5 +80,36 @@ class EventStateNotifier extends _$EventStateNotifier {
       final docs = event.docs.first; // 一致したものの最初のものだけ削除(同じ名前のイベントは削除しない)
       await userEvent.doc(docs.id).delete();
       await firebaseEvents.doc(docs.id).delete();
+    }
+
+    // check weekly event count
+    Future<int> checkWeeklyEventCount(String uid, String duration) async {
+      var eventDays = [];
+      final myEvents = await getMyEventIds(uid);
+      final now = DateTime.now();
+      final weekAgo = now.subtract(const Duration(days: 7));
+      final monthAgo = now.subtract(const Duration(days: 30));
+      final yearAgo = now.subtract(const Duration(days: 365));
+
+        for(String element in myEvents) {
+          final firebaseEvents = FirebaseFirestore.instance.collection(
+              'calendar_events');
+          final doc = await firebaseEvents.doc(element).get();
+
+          final data = doc.data()!;
+          final eventDay = data['date'].toDate();
+          final date = DateTime(eventDay.year, eventDay.month, eventDay.day);
+          final eventDateTime = date.add(date.timeZoneOffset).toUtc();
+
+          // 今週のものをカウント
+          if (duration == 'weekly' && eventDateTime.isAfter(weekAgo) && eventDateTime.isBefore(now)) {
+            eventDays.add(eventDateTime);
+          } else if (duration == 'monthly' && eventDateTime.isAfter(monthAgo) && eventDateTime.isBefore(now)) {
+            eventDays.add(eventDateTime);
+          } else if (duration == 'yearly' && eventDateTime.isAfter(yearAgo) && eventDateTime.isBefore(now)) {
+            eventDays.add(eventDateTime);
+          }
+        }
+        return eventDays.length;
     }
 }
