@@ -1,13 +1,11 @@
 // 筋トレレベル管理ページ
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_workout_manager/presentation/controller/event_state_notifier.dart';
 import 'package:flutter_workout_manager/presentation/pages/add_page.dart';
-import 'package:flutter_workout_manager/presentation/widgets/my_ad_banner.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -29,38 +27,6 @@ class CalenderPage extends HookConsumerWidget {
     final eventData = useState<Map<DateTime, List<String>>?>(null);
     final isLoading = useState(true); // ローディング用フラグ
 
-    String interstitialAdUId = 'ca-app-pub-2751119101175618/8292777815';
-    var interstitialAd = useState<InterstitialAd?>(null);
-
-    void loadAd() {
-      InterstitialAd.load(
-        adUnitId: interstitialAdUId,
-        request: const AdRequest(),
-        adLoadCallback: InterstitialAdLoadCallback(
-          onAdLoaded: (ad) {
-            interstitialAd.value = ad;
-            interstitialAd.value!.fullScreenContentCallback = FullScreenContentCallback(
-              onAdShowedFullScreenContent: (ad) {},
-              onAdDismissedFullScreenContent: (ad) {
-                debugPrint('ad onAdDismissedFullScreenContent.');
-                ad.dispose();
-                loadAd();
-              },
-              onAdFailedToShowFullScreenContent: (ad, error) {
-                debugPrint('ad onAdFailedToShowFullScreenContent.');
-                ad.dispose();
-                loadAd();
-              },
-            );
-          },
-          // Called when an ad request failed.
-          onAdFailedToLoad: (LoadAdError error) {
-            debugPrint('InterstitialAd failed to load: $error');
-          },
-        ),
-      );
-    }
-
     // データを取得してeventDataを更新する関数
     Future<void> fetchEventData() async {
       isLoading.value = true;
@@ -72,17 +38,7 @@ class CalenderPage extends HookConsumerWidget {
     useEffect(() {
       // 初回データ取得
       fetchEventData();
-      loadAd();
-
-      Future.delayed(const Duration(seconds: 4), () {
-        if(interstitialAd.value != null) {
-          interstitialAd.value!.show();
-        }
-      });
-
-      return () {
-        interstitialAd.value?.dispose();
-      };
+      return () {};
     },const []);
 
     //　イベントカウント関数
@@ -146,7 +102,9 @@ class CalenderPage extends HookConsumerWidget {
                   onPressed: () async {
                     final result = await Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
-                      return AddPage(uid: data.uid);
+                      return AddPage(
+                          uid: data.uid,
+                          selectedDay: Timestamp.fromDate(_focusedDay.value));
                     }));
 
                     if (result == true) {
@@ -163,8 +121,6 @@ class CalenderPage extends HookConsumerWidget {
                     color: Colors.white,
                   ),
                 ),
-                 const SizedBox(height: 10),
-                 const MyAdBanner()
               ],
             ),
           );

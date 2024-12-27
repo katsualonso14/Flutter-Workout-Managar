@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_workout_manager/presentation/pages/calender_page.dart';
 import 'package:flutter_workout_manager/presentation/pages/login.dart';
 import 'package:flutter_workout_manager/presentation/state/providers.dart';
+import 'package:flutter_workout_manager/presentation/widgets/navigation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'core/firebase_options.dart';
@@ -192,7 +193,7 @@ class App extends HookConsumerWidget {
             },
             data: (data) {
               if (data != null) {
-                return CalenderPage(data: data);
+                return Navigation(data: data);
               } else {
                 return const LogIn();
               }
