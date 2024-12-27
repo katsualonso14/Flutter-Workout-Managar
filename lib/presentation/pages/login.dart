@@ -5,7 +5,7 @@ import 'package:flutter_workout_manager/presentation/controller/firebase.dart';
 import 'package:flutter_workout_manager/presentation/pages/calender_page.dart';
 import 'package:flutter_workout_manager/presentation/pages/no_login_calender_page.dart';
 import 'package:flutter_workout_manager/presentation/state/providers.dart';
-import 'package:flutter_workout_manager/presentation/widgets/my_ad_banner.dart';
+import 'package:flutter_workout_manager/presentation/widgets/medium_ad_banner.dart';
 
 
 
@@ -19,6 +19,7 @@ class LogIn extends ConsumerWidget {
     final infoText = ref.watch(infoTextProvider.state);
 
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Center(
           child: Container(
@@ -28,13 +29,13 @@ class LogIn extends ConsumerWidget {
               children: <Widget>[
                 TextFormField(
                   // テキスト入力のラベルを設定
-                  decoration: const InputDecoration(labelText: "メールアドレス"),
+                  decoration: const InputDecoration(labelText: "Mail Address"),
                   onChanged: (String value) {
                     userEmail.state = value;
                   },
                 ),
                 TextFormField(
-                  decoration: const InputDecoration(labelText: "パスワード（６文字以上）"),
+                  decoration: const InputDecoration(labelText: "Password(6 characters or more)"),
                   // パスワードが見えないようにする
                   obscureText: true,
                   onChanged: (String value) {
@@ -57,18 +58,18 @@ class LogIn extends ConsumerWidget {
 
                           // 登録したユーザー情報
                           final User? user = result.user;
-                          infoText.state = '以下のEメールアドレスにて登録が完了いたしました。\n${user!.email}';
+                          infoText.state = 'The registration has been completed at the following email address.\n${user!.email}';
                         } catch (e) {
                           // 登録に失敗した場合
-                          infoText.state = '登録に失敗いたしました。再度お試しください。\n※パスワードは６文字以上で入力してください。\n※メールアドレスは正しい形式で入力してください。';
+                          infoText.state = 'failed to register. Please try again.\n*Please enter a password of 6 characters or more.\n*Please enter a valid email address.';
                         }
                       },
-                      child: const Text('ユーザー登録')),
+                      child: const Text('Register User Account')),
                 ),
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton(
-                    child: const Text('ログイン'),
+                    child: const Text('Login'),
                     onPressed: () async {
                       try {
                         var result = await FireStore.signIn(
@@ -81,20 +82,20 @@ class LogIn extends ConsumerWidget {
                             Navigator.pushReplacement(context,
                                 MaterialPageRoute(builder: (context) => CalenderPage(data: result.user!)));
                           } else {
-                            infoText.state = 'ログインに失敗しました。再度お試しください。\n※パスワードは６文字以上で入力してください。\n※メールアドレスは正しい形式で入力してください。';
+                            infoText.state = 'failed to register. Please try again.\n*Please enter a password of 6 characters or more.\n*Please enter a valid email address.';
                           }
                         } else {
-                          infoText.state = 'ログインに失敗しました。再度お試しください。\n※パスワードは６文字以上で入力してください。\n※メールアドレスは正しい形式で入力してください。';
+                          infoText.state = 'failed to register. Please try again.\n*Please enter a password of 6 characters or more.\n*Please enter a valid email address.';
                         }
                       } catch (e) {
-                        infoText.state = 'ログインに失敗しました。再度お試しください。\n※パスワードは６文字以上で入力してください。\n※メールアドレスは正しい形式で入力してください。';
+                        infoText.state = 'failed to register. Please try again.\n*Please enter a password of 6 characters or more.\n*Please enter a valid email address.';
                         print(infoText.state);
                       }
                     },
                   ),
                 ),
                 OutlinedButton(
-                  child: const Text('ログインなしでカレンダー機能の確認', style: TextStyle(color: Colors.grey)),
+                  child: const Text('Check the calendar function without logging in', style: TextStyle(color: Colors.grey)),
 
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(
@@ -103,7 +104,7 @@ class LogIn extends ConsumerWidget {
                 ),
 
                 Text(infoText.state),
-              const MyAdBanner(),
+              const MediumAdBanner(),
               ],
             ),
           ),

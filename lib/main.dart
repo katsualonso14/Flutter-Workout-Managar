@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_workout_manager/presentation/pages/calender_page.dart';
 import 'package:flutter_workout_manager/presentation/pages/login.dart';
 import 'package:flutter_workout_manager/presentation/state/providers.dart';
 import 'package:flutter_workout_manager/presentation/widgets/navigation.dart';
@@ -129,21 +128,22 @@ class App extends HookConsumerWidget {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: const Text('ログアウト'),
-                        content: const Text('はいをタップするとログイン画面に戻ります。\n本当にログアウトしますか？'),
+                        title: const Text('Logout'),
+                        //英語でcontent: const Text('はいをタップするとログイン画面に戻ります。\n本当にログアウトしますか？'),
+                        content: const Text('If you tap "Yes", you will return to the login screen.\nAre you sure you want to log out?'),
                         actions: [
                           TextButton(
                             onPressed: () async {
                               await FirebaseAuth.instance.signOut();
                               Navigator.pop(context);
                             },
-                            child: const Text('はい'),
+                            child: const Text('Yes'),
                           ),
                           TextButton(
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            child: const Text('いいえ'),
+                            child: const Text('No'),
                           ),
                         ],
                       );
@@ -158,21 +158,21 @@ class App extends HookConsumerWidget {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: const Text('アカウント削除'),
-                        content: const Text('はいをタップするとアカウントが削除されます。\n本当に削除しますか？'),
+                        title: const Text('Delete Account'),
+                        content: const Text('If you tap "Yes", your account will be deleted.\nAre you sure you want to delete your account?'),
                         actions: [
                           TextButton(
                             onPressed: () async {
                               await deleteUserAccount();
                               Navigator.pop(context);
                             },
-                            child: const Text('はい'),
+                            child: const Text('Yes'),
                           ),
                           TextButton(
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            child: const Text('いいえ'),
+                            child: const Text('No'),
                           ),
                         ],
                       );

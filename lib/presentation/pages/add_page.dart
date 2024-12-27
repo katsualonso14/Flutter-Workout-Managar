@@ -7,7 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_workout_manager/data/models/event.dart';
 import 'package:flutter_workout_manager/data/models/eventTiles.dart';
 import 'package:flutter_workout_manager/presentation/controller/event_state_notifier.dart';
-import 'package:flutter_workout_manager/presentation/widgets/my_ad_banner.dart';
+import 'package:flutter_workout_manager/presentation/widgets/medium_ad_banner.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 
@@ -65,7 +65,7 @@ class AddPage extends HookConsumerWidget {
                 child: const Text('Register Event'),
               ),
               const SizedBox(height: 70),
-              const MyAdBanner(),
+              const MediumAdBanner(),
             ],
           )
         ),
