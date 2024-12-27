@@ -19,7 +19,7 @@ class NoLoginCalendarPage extends HookWidget {
     ];
     return Scaffold(
       appBar: AppBar(
-        title: const Text('カレンダー機能の確認'),
+        title: const Text('Check Your Fitness Schedule'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -55,7 +55,7 @@ class NoLoginCalendarPage extends HookWidget {
               itemBuilder: (context, index) {
                 return const Card(
                   child: ListTile(
-                    title: Text('こちらにはイベントが表示されます', style: TextStyle(color: Colors.grey)),
+                    title: Text('This is where events will be displayed', style: TextStyle(color: Colors.grey)),
                   ),
                 );
               },
