@@ -1,10 +1,10 @@
 
 
 List<String> eventTitles = [
+  'Push-ups',
   'Abdominal exercises',
   'Back exercises',
   'Squats',
-  'Push-ups',
   'Core Training',
   'Stretching',
   'Other (Please Specify)'
