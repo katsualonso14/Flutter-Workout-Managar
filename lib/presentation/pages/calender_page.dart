@@ -98,27 +98,33 @@ class CalenderPage extends HookConsumerWidget {
                     },
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () async {
-                    final result = await Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return AddPage(
-                          uid: data.uid,
-                          selectedDay: Timestamp.fromDate(_focusedDay.value));
-                    }));
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 20, bottom: 30),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final result = await Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return AddPage(
+                              uid: data.uid,
+                              selectedDay: Timestamp.fromDate(_focusedDay.value));
+                        }));
 
-                    if (result == true) {
-                      await fetchEventData();
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple,
-                    shape: const CircleBorder(),
-                    padding: const EdgeInsets.all(20),
-                  ),
-                  child: const Icon(
-                    Icons.add,
-                    color: Colors.white,
+                        if (result == true) {
+                          await fetchEventData();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(20),
+                      ),
+                      child: const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
               ],
