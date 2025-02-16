@@ -21,36 +21,39 @@ class EventStateNotifier extends _$EventStateNotifier {
   }
 
     // Firebase一致したものを取得　
-    Future<Map<DateTime, List<String>>?> getEventFromIds(String id) async {
+  Future<Map<DateTime, List<String>>?> getEventFromIds(String id) async {
+    Map<DateTime, List<String>> events = {};
+    final myEvents = await getMyEventIds(id);
 
-      Map<DateTime, List<String>> events = {};
-      final myEvents = await getMyEventIds(id);
+    try {
+      final firebaseEvents = FirebaseFirestore.instance.collection(
+          'calendar_events');
+      final doc = myEvents.map((element) => firebaseEvents.doc(element).get())
+          .toList();
+      // 非同期処理を待つ
+      final snapshot = await Future.wait(doc);
 
-      try{
-        for(String element in myEvents){
-          final firebaseEvents =  FirebaseFirestore.instance.collection('calendar_events');
-          final doc = await firebaseEvents.doc(element).get();
+      for (var doc in snapshot) {
+        final data = doc.data()!;
+        final event = data['event'];
+        final eventDay = data['date'].toDate();
+        final date = DateTime(eventDay.year, eventDay.month, eventDay.day);
+        final eventDateTime = date.add(date.timeZoneOffset).toUtc();
 
-          final data = doc.data()!;
-          final event = data['event'];
-          final eventDay = data['date'].toDate();
-          final date = DateTime(eventDay.year, eventDay.month, eventDay.day);
-          final eventDateTime = date.add(date.timeZoneOffset).toUtc();
-
-          // 日付が同じなら同じリストに追加
-          if(events.containsKey(eventDateTime)){
-             events[eventDateTime]!.add(event) ;
-          } else {
-            events[eventDateTime] = [event];
-          }
+        // 日付が同じなら同じリストに追加
+        if (events.containsKey(eventDateTime)) {
+          events[eventDateTime]!.add(event);
+        } else {
+          events[eventDateTime] = [event];
         }
-
-        return events;
-      } on FirebaseException catch(e) {
-        print('自分の投稿取得失敗 $e'); //デバッグ用
-        return null;
       }
+
+      return events;
+    } on FirebaseException catch (e) {
+      print('自分の投稿取得失敗 $e'); //デバッグ用
+      return null;
     }
+  }
 
     // イベントを追加
     Future<void> addEvent(String event, Event newEvent, Timestamp eventDate) async {

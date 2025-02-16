@@ -15,29 +15,29 @@ class CountPage extends HookConsumerWidget {
     var weeklyEventCount = useState(0);
     var monthlyEventCount = useState(0);
     var yearlyEventCount = useState(0);
-    var isWeeklyLoading = useState(false);
-    var isMonthlyLoading = useState(false);
-    var isYearlyLoading = useState(false);
+    var isWeeklyLoading = useState(true);
+    var isMonthlyLoading = useState(true);
+    var isYearlyLoading = useState(true);
 
     void fetchWeeklyData() async {
       // get weekly event count
       var eventWeeklyDays =  await eventStateNotifier.checkWeeklyEventCount(data.uid, 'weekly');
       weeklyEventCount.value =  eventWeeklyDays;
-      isWeeklyLoading.value = true;
+      isWeeklyLoading.value = false;
     }
 
     void fetchMonthlyData() async {
       // get monthly event count
       var eventMonthlyDays =  await eventStateNotifier.checkWeeklyEventCount(data.uid, 'monthly');
       monthlyEventCount.value =  eventMonthlyDays;
-      isMonthlyLoading.value = true;
+      isMonthlyLoading.value = false;
     }
 
     void fetchYearlyData() async {
       // get yearly event count
       var eventYearlyDays =  await eventStateNotifier.checkWeeklyEventCount(data.uid, 'yearly');
       yearlyEventCount.value =  eventYearlyDays;
-      isYearlyLoading.value = true;
+      isYearlyLoading.value = false;
     }
 
     useEffect(() {
@@ -73,9 +73,8 @@ class CountPage extends HookConsumerWidget {
                   color: Colors.white,
                 ),
                 child: Center(
-                    child: weeklyEventCount.value == 0 && i == 0 ? const Text("No Fitness Dates") :
-                    monthlyEventCount.value == 0 && i == 1 ? const Text("No Fitness Dates") :
-                    yearlyEventCount.value == 0 && i == 2 ? const Text("No Fitness Dates") :
+                    child: isWeeklyLoading.value || isMonthlyLoading.value || isYearlyLoading.value ?
+                    const CircularProgressIndicator() :
                     Text(
                         i == 0 ? "This Week's Fitness Dates:  ${weeklyEventCount.value}" :
                         i == 1 ? "This Month's Fitness Dates:  ${monthlyEventCount.value}" :
