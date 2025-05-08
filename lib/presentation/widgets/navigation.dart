@@ -1,13 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_workout_manager/domain/entities/view_type.dart';
+import 'package:flutter_workout_manager/presentation/controller/navi_provider.dart';
 import 'package:flutter_workout_manager/presentation/pages/calender_page.dart';
 import 'package:flutter_workout_manager/presentation/pages/count_page.dart';
 import 'package:flutter_workout_manager/presentation/widgets/my_ad_banner.dart';
-
-final naviProvider = StateProvider((ref) => ViewType.calender);
-
-enum ViewType { calender, count, }
 
 class Navigation extends ConsumerWidget {
   const Navigation({Key? key, required this.data}) : super(key: key);
