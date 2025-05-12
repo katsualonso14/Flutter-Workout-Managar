@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_workout_manager/presentation/controller/auth_state_providers.dart';
 import 'package:flutter_workout_manager/presentation/pages/login.dart';
-import 'package:flutter_workout_manager/presentation/controller/providers.dart';
 import 'package:flutter_workout_manager/presentation/widgets/dialog/logout_alert_dialog.dart';
 import 'package:flutter_workout_manager/presentation/widgets/navigation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -33,7 +33,7 @@ class App extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userCheck = ref.watch(userCheckProvider);
+    final userCheck = ref.watch(authStateProvider);
     return Scaffold(
         appBar: AppBar(
           title: const Text('Home Fitness Manager', style: TextStyle(color: Colors.blue, fontStyle: FontStyle.italic)),

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_workout_manager/presentation/controller/firebase.dart';
 import 'package:flutter_workout_manager/presentation/pages/calender_page.dart';
 import 'package:flutter_workout_manager/presentation/pages/no_login_calender_page.dart';
-import 'package:flutter_workout_manager/presentation/controller/providers.dart';
+import 'package:flutter_workout_manager/presentation/controller/login_form_providers.dart';
 import 'package:flutter_workout_manager/presentation/widgets/medium_ad_banner.dart';
 
 
