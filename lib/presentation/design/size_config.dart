@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+// 画面サイズ取得用のクラス
 class SizeConfig {
   static MediaQueryData? _mediaQueryData;
   static double? screenWidth;

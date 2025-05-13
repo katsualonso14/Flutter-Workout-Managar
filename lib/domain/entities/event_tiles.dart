@@ -1,5 +1,5 @@
 
-
+//　イベントの種類
 List<String> eventTitles = [
   'Push-ups',
   'Abdominal exercises',
