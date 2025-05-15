@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_workout_manager/data/models/event.dart';
+import 'package:flutter_workout_manager/domain/entities/event_entity.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'event_state_notifier.g.dart';
@@ -8,8 +8,8 @@ part 'event_state_notifier.g.dart';
 @riverpod
 class EventStateNotifier extends _$EventStateNotifier {
   @override
-  Event build() {
-    return Event(event: '', eventDay: Timestamp.now(), userid: '');
+  EventEntity build() {
+    return EventEntity(event: '', eventDay: DateTime.now(), userid: '');
   }
 
   // FirebaseのUserコレクションからmyEventsを取得
