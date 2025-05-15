@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_workout_manager/data/models/event.dart';
 import 'package:flutter_workout_manager/domain/entities/event_entity.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -56,10 +55,13 @@ class EventStateNotifier extends _$EventStateNotifier {
   }
 
     // イベントを追加
-    Future<void> addEvent(String event, Event newEvent, Timestamp eventDate) async {
+    Future<void> addEvent(String event, EventEntity newEvent) async {
       final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
       final firebaseUsers = FirebaseFirestore.instance.collection('users');
       final userEvent = firebaseUsers.doc(newEvent.userid).collection('myEvents');
+
+      // イベントの日付をTimeStamp型に変換
+      final eventDate = Timestamp.fromDate(newEvent.eventDay);
 
       final result = await firebaseEvents.add({
         'date': eventDate,
