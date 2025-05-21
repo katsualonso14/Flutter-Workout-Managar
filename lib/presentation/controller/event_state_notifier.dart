@@ -1,118 +1,40 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_workout_manager/data/models/event.dart';
+import 'package:flutter_workout_manager/domain/entities/event_entity.dart';
+import 'package:flutter_workout_manager/domain/usecases/add_event_usecase.dart';
+import 'package:flutter_workout_manager/domain/usecases/check_weekly_event_count_usecase.dart';
+import 'package:flutter_workout_manager/domain/usecases/delete_event_usecase.dart';
+import 'package:flutter_workout_manager/domain/usecases/get_event_from_ids_usecase.dart';
+import 'package:flutter_workout_manager/domain/usecases/get_my_event_ids_usecase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter_workout_manager/domain/providers/get_event_from_ids_usecase_provider.dart';
+import 'package:flutter_workout_manager/domain/providers/get_my_event_ids_usecase_provider.dart';
+import 'package:flutter_workout_manager/domain/providers/add_event_usecase_provider.dart';
+import 'package:flutter_workout_manager/domain/providers/delete_event_usecase_provider.dart';
+import 'package:flutter_workout_manager/domain/providers/check_weekly_event_count_usecase_provider.dart';
 
 part 'event_state_notifier.g.dart';
 
 @riverpod
 class EventStateNotifier extends _$EventStateNotifier {
+  late final GetMyEventIdsUseCase _getMyEventIds;
+  late final GetEventFromIdsUseCase _getEventFromIds;
+  late final AddEventUseCase _addEvent;
+  late final DeleteEventUseCase _deleteEvent;
+  late final CheckWeeklyEventCountUseCase _checkCount;
+
   @override
-  Event build() {
-    return Event(event: '', eventDay: Timestamp.now(), userid: '');
+  EventEntity build() {
+    _getMyEventIds = ref.read(getMyEventIdsUseCaseProvider);
+    _getEventFromIds = ref.read(getEventFromIdsUseCaseProvider);
+    _addEvent = ref.read(addEventUseCaseProvider);
+    _deleteEvent = ref.read(deleteEventUseCaseProvider);
+    _checkCount = ref.read(checkWeeklyEventCountUseCaseProvider);
+
+    return EventEntity(event: '', eventDay: DateTime.now(), userid: '');
   }
 
-  // FirebaseのUserコレクションからmyEventsを取得
-  Future<List<String>> getMyEventIds(String uid) async {
-    final myEvents = await FirebaseFirestore.instance.collection('users').doc(uid).collection('myEvents').get();
-    final event = myEvents.docs.map((e) => e.id).toList();
-    return event;
-
-  }
-
-    // Firebase一致したものを取得　
-  Future<Map<DateTime, List<String>>?> getEventFromIds(String id) async {
-    Map<DateTime, List<String>> events = {};
-    final myEvents = await getMyEventIds(id);
-
-    try {
-      final firebaseEvents = FirebaseFirestore.instance.collection(
-          'calendar_events');
-      final doc = myEvents.map((element) => firebaseEvents.doc(element).get())
-          .toList();
-      // 非同期処理を待つ
-      final snapshot = await Future.wait(doc);
-
-      for (var doc in snapshot) {
-        final data = doc.data()!;
-        final event = data['event'];
-        final eventDay = data['date'].toDate();
-        final date = DateTime(eventDay.year, eventDay.month, eventDay.day);
-        final eventDateTime = date.add(date.timeZoneOffset).toUtc();
-
-        // 日付が同じなら同じリストに追加
-        if (events.containsKey(eventDateTime)) {
-          events[eventDateTime]!.add(event);
-        } else {
-          events[eventDateTime] = [event];
-        }
-      }
-
-      return events;
-    } on FirebaseException catch (e) {
-      print('自分の投稿取得失敗 $e'); //デバッグ用
-      return null;
-    }
-  }
-
-    // イベントを追加
-    Future<void> addEvent(String event, Event newEvent, Timestamp eventDate) async {
-      final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
-      final firebaseUsers = FirebaseFirestore.instance.collection('users');
-      final userEvent = firebaseUsers.doc(newEvent.userid).collection('myEvents');
-
-      final result = await firebaseEvents.add({
-        'date': eventDate,
-        'event': event,
-        'userid': newEvent.userid,
-      });
-
-      userEvent.doc(result.id).set({
-        'eventTime': eventDate,
-        'event_id': result.id,
-      });
-    }
-
-    // イベントを削除
-    Future<void> deleteEvent(String uid, String eventName) async {
-      final firebaseUsers = FirebaseFirestore.instance.collection('users');
-      final userEvent = firebaseUsers.doc(uid).collection('myEvents');
-      final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
-      // イベント名が一致するものを取得
-      final event = await firebaseEvents.where('event', isEqualTo: eventName).get();
-      final docs = event.docs.first; // 一致したものの最初のものだけ削除(同じ名前のイベントは削除しない)
-      await userEvent.doc(docs.id).delete();
-      await firebaseEvents.doc(docs.id).delete();
-    }
-
-    // check weekly event count
-    Future<int> checkWeeklyEventCount(String uid, String duration) async {
-      var eventDays = [];
-      final myEvents = await getMyEventIds(uid);
-      final now = DateTime.now();
-      final weekAgo = now.subtract(const Duration(days: 7));
-      final monthAgo = now.subtract(const Duration(days: 30));
-      final yearAgo = now.subtract(const Duration(days: 365));
-
-        for(String element in myEvents) {
-          final firebaseEvents = FirebaseFirestore.instance.collection(
-              'calendar_events');
-          final doc = await firebaseEvents.doc(element).get();
-
-          final data = doc.data()!;
-          final eventDay = data['date'].toDate();
-          final date = DateTime(eventDay.year, eventDay.month, eventDay.day);
-          final eventDateTime = date.add(date.timeZoneOffset).toUtc();
-
-          // 今週のものをカウント
-          if (duration == 'weekly' && eventDateTime.isAfter(weekAgo) && eventDateTime.isBefore(now)) {
-            eventDays.add(eventDateTime);
-          } else if (duration == 'monthly' && eventDateTime.isAfter(monthAgo) && eventDateTime.isBefore(now)) {
-            eventDays.add(eventDateTime);
-          } else if (duration == 'yearly' && eventDateTime.isAfter(yearAgo) && eventDateTime.isBefore(now)) {
-            eventDays.add(eventDateTime);
-          }
-        }
-        return eventDays.length;
-    }
+  Future<List<String>> getMyEventIds(String uid) => _getMyEventIds(uid);
+  Future<Map<DateTime, List<String>>?> getEventFromIds(String uid) => _getEventFromIds(uid);
+  Future<void> addEvent(String event, EventEntity newEvent) => _addEvent(event, newEvent);
+  Future<void> deleteEvent(String uid, String eventName) => _deleteEvent(uid, eventName);
+  Future<int> checkWeeklyEventCount(String uid, String duration) => _checkCount(uid, duration);
 }

@@ -107,7 +107,8 @@ class CalenderPage extends HookConsumerWidget {
                             .push(MaterialPageRoute(builder: (context) {
                           return AddPage(
                               uid: data.uid,
-                              selectedDay: Timestamp.fromDate(_focusedDay.value));
+                              selectedDay: _focusedDay.value
+                          );
                         }));
 
                         if (result == true) {

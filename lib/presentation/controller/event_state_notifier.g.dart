@@ -7,12 +7,12 @@ part of 'event_state_notifier.dart';
 // **************************************************************************
 
 String _$eventStateNotifierHash() =>
-    r'60ab32e303b43027f998250a82b960830786feda';
+    r'771bc001254fcfa720ff37233e46330b46f212b0';
 
 /// See also [EventStateNotifier].
 @ProviderFor(EventStateNotifier)
 final eventStateNotifierProvider =
-    AutoDisposeNotifierProvider<EventStateNotifier, Event>.internal(
+    AutoDisposeNotifierProvider<EventStateNotifier, EventEntity>.internal(
   EventStateNotifier.new,
   name: r'eventStateNotifierProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -22,6 +22,6 @@ final eventStateNotifierProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$EventStateNotifier = AutoDisposeNotifier<Event>;
+typedef _$EventStateNotifier = AutoDisposeNotifier<EventEntity>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

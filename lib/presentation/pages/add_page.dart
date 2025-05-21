@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_workout_manager/data/models/event.dart';
+import 'package:flutter_workout_manager/domain/entities/event_entity.dart';
 import 'package:flutter_workout_manager/domain/entities/event_tiles.dart';
 import 'package:flutter_workout_manager/presentation/controller/event_state_notifier.dart';
 import 'package:flutter_workout_manager/presentation/widgets/medium_ad_banner.dart';
@@ -14,7 +15,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class AddPage extends HookConsumerWidget {
   const AddPage({Key? key, required this.uid, required this.selectedDay}) : super(key: key);
   final String uid;
-  final Timestamp selectedDay;
+  final DateTime selectedDay;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,7 +49,7 @@ class AddPage extends HookConsumerWidget {
               const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () async {
-                  Event newEvent = Event(
+                  EventEntity newEvent = EventEntity(
                     event: pickerMenu.value == 'Other (Please Specify)' ? event : pickerMenu.value,
                     eventDay: selectedDay,
                     userid: uid,
@@ -56,7 +57,6 @@ class AddPage extends HookConsumerWidget {
                   await ref.read(eventStateNotifierProvider.notifier).addEvent(
                        pickerMenu.value == 'Other (Please Specify)' ? event : pickerMenu.value,
                        newEvent,
-                      selectedDay
                   );
                   editController.clear();
                   // trueを渡しデータ更新実施
