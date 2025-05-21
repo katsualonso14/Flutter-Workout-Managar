@@ -15,7 +15,6 @@ part 'event_state_notifier.g.dart';
 
 @riverpod
 class EventStateNotifier extends _$EventStateNotifier {
-  //TODO: domain/usecasesを呼んでいるのでdomain/providersをimportするだけに変換できないか検討
   late final GetMyEventIdsUseCase _getMyEventIds;
   late final GetEventFromIdsUseCase _getEventFromIds;
   late final AddEventUseCase _addEvent;
