@@ -1,17 +1,15 @@
 // 筋トレレベル管理ページ
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_workout_manager/presentation/controller/auth_providers.dart';
 import 'package:flutter_workout_manager/presentation/controller/event_state_notifier.dart';
 import 'package:flutter_workout_manager/presentation/pages/add_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CalenderPage extends HookConsumerWidget {
-  CalenderPage({Key? key, required this.data}) : super(key: key);
+  CalenderPage({Key? key}) : super(key: key);
 
-  final User data;
   final _calendarFormat = [
     CalendarFormat.month,
     CalendarFormat.twoWeeks,
@@ -25,6 +23,12 @@ class CalenderPage extends HookConsumerWidget {
     final eventStateNotifier = ref.watch(eventStateNotifierProvider.notifier);
     final eventData = useState<Map<DateTime, List<String>>?>(null);
     final isLoading = useState(true); // ローディング用フラグ
+
+    final data = ref.watch(authStateProvider).value; // FirebaseAuthのインスタンスを取得
+
+    if (data == null) {
+      return const Center(child: Text('Please log in.'));
+    }
 
     // データを取得してeventDataを更新する関数
     Future<void> fetchEventData() async {
