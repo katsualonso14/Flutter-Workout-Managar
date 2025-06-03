@@ -55,7 +55,7 @@ class App extends HookConsumerWidget {
               onPressed: () {
                 showDialog(
                     context: context,
-                    builder: (context) => const DeleteCheckDialog()
+                    builder: (context) => DeleteCheckDialog()
                 );
               },
             ),
