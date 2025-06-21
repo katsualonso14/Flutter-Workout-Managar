@@ -16,6 +16,12 @@ class FirebaseAuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<void> deleteUser() async {
-    await _auth.currentUser?.delete();
+    // currentUserがnullでないことを確認
+    if (_auth.currentUser == null) {
+      throw Exception('No user is currently signed in.');
+    } else {
+      await _auth.currentUser!.delete();
+    }
+
   }
 }

@@ -19,17 +19,23 @@ class DeleteCheckDialog extends ConsumerWidget {
           onPressed: () async {
             try {
               await ref.read(deleteUserNotifierProvider.notifier).deleteUser();
-              Navigator.pop(context); // ダイアログ閉じる
+              if (context.mounted) {
+                Navigator.pop(context); // ダイアログ閉じる
+              }
               await Future.delayed(const Duration(milliseconds: 300)); // ←猶予を与える
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (_) => const LogIn()), // ログイン画面へ
-                    (route) => false,
-              );
+              if (context.mounted) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LogIn()), // ログイン画面へ
+                      (route) => false,
+                );
+              }
             } catch (e) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Failed to delete account')),
-              );
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Failed to delete account')),
+                );
+              }
             }
           },
           child: const Text('Yes'),
