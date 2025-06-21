@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_workout_manager/presentation/controller/auth_state_providers.dart';
+import 'package:flutter_workout_manager/presentation/controller/auth_providers.dart';
 import 'package:flutter_workout_manager/presentation/pages/login.dart';
 import 'package:flutter_workout_manager/presentation/widgets/dialog/logout_alert_dialog.dart';
 import 'package:flutter_workout_manager/presentation/widgets/navigation.dart';
@@ -55,7 +55,7 @@ class App extends HookConsumerWidget {
               onPressed: () {
                 showDialog(
                     context: context,
-                    builder: (context) => const DeleteCheckDialog()
+                    builder: (context) => DeleteCheckDialog()
                 );
               },
             ),
@@ -71,7 +71,7 @@ class App extends HookConsumerWidget {
             },
             data: (data) {
               if (data != null) {
-                return Navigation(data: data);
+                return const Navigation();
               } else {
                 return const LogIn();
               }

@@ -1,13 +1,12 @@
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_workout_manager/domain/entities/user_entity.dart';
 import 'package:flutter_workout_manager/presentation/controller/event_state_notifier.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class CountPage extends HookConsumerWidget {
   const CountPage({Key? key, required this.data}) : super(key: key);
-  final User data;
+  final UserEntity data;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
