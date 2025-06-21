@@ -15,7 +15,6 @@ class DeleteCheckDialog extends ConsumerWidget {
       content: const Text('If you tap "Yes", your account will be deleted.\nAre you sure you want to delete your account?'),
       actions: [
         TextButton(
-          //TODO: 削除後の「 Unhandled Exception: Looking up a deactivated widget's ancestor is unsafe.」バグ修正
           onPressed: () async {
             try {
               await ref.read(deleteUserNotifierProvider.notifier).deleteUser();
