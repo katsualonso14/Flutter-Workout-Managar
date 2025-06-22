@@ -13,7 +13,6 @@ class LogIn extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userEmail = ref.watch(emailProvider.state);
     final userPassword = ref.watch(passwordProvider.state);
-    final infoText = ref.watch(infoTextProvider.state);
     final signInState = ref.watch(signInUserNotifierProvider);
 
     return Column(
@@ -40,7 +39,8 @@ class LogIn extends ConsumerWidget {
                     userPassword.state = value;
                   },
                 ),
-                Container(
+                const SizedBox(height: 30,),
+                SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                       onPressed: () async {
@@ -56,17 +56,35 @@ class LogIn extends ConsumerWidget {
 
                           // 登録したユーザー情報
                           final User? user = result.user;
-                          infoText.state = 'The registration has been completed at the following email address.\n${user!.email}';
+                          if( context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('User registered successfully: ${user?.email}')),
+                            );
+                          }
                         } catch (e) {
                           // 登録に失敗した場合
-                          infoText.state = 'failed to register. Please try again.\n*Please enter a password of 6 characters or more.\n*Please enter a valid email address.';
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text(
+                                      'failed to register. Please try again.'
+                                      '\nPlease enter a password of 6 characters or more.'
+                                      '\nPlease enter a valid email address')),
+                            );
+                          }
                         }
                       },
-                      child: const Text('Register User Account')),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue, // ボタンの背景色
+                        foregroundColor: Colors.white, // ボタンの文字色
+                    ),
+                      child: const Text('Register User Account'),
+                  ),
+
                 ),
                 SizedBox(
                     width: double.infinity,
-                    child: OutlinedButton(
+                    child: ElevatedButton(
                       // 無効化（多重タップ防止）
                       onPressed: signInState.isLoading ? null : () async {
                               try {
@@ -74,12 +92,25 @@ class LogIn extends ConsumerWidget {
                                     .read(signInUserNotifierProvider.notifier)
                                     .signIn(
                                         userEmail.state, userPassword.state);
-                                infoText.state = 'Login successful';
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Login successful')),
+                                  );
+                                }
                               } catch (e) {
-                                infoText.state =
-                                    'Login failed. Please check your email and password.';
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'Login failed. Please check your email and password.')),
+                                  );
+                                }
                               }
                             },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.blueAccent,
+                      ),
                       child: signInState.isLoading ? const CircularProgressIndicator() : const Text('Login'),
                     )),
                 OutlinedButton(
@@ -90,9 +121,8 @@ class LogIn extends ConsumerWidget {
                           builder: (context) => const NoLoginCalendarPage()));
                     }
                 ),
-
-                Text(infoText.state),
-              const MediumAdBanner(),
+                const SizedBox(height: 30,),
+                const MediumAdBanner(),
               ],
             ),
           ),
