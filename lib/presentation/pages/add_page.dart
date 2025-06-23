@@ -1,10 +1,8 @@
 //記録追加ページ
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_workout_manager/data/models/event.dart';
 import 'package:flutter_workout_manager/domain/entities/event_entity.dart';
 import 'package:flutter_workout_manager/domain/entities/event_tiles.dart';
 import 'package:flutter_workout_manager/presentation/controller/event_state_notifier.dart';

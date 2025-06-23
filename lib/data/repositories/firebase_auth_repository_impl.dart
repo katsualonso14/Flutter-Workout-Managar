@@ -28,6 +28,17 @@ class FirebaseAuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<UserEntity> register({required String email, required String password}) async {
+    final userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+    final firebaseUser = userCredential.user;
+    if (firebaseUser == null) {
+      throw Exception('Registration failed: User credential is null');
+    }
+    return UserEntity(uid: firebaseUser.uid, email: firebaseUser.email);
+  }
+
+
+  @override
   Future<void> deleteUser() async {
     // currentUserがnullでないことを確認
     if (_auth.currentUser == null) {

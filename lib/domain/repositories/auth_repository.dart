@@ -5,5 +5,6 @@ import 'package:flutter_workout_manager/domain/entities/user_entity.dart';
 abstract class AuthRepository {
   Stream<UserEntity?> authStateChanges();
   Future<AuthResultEntity> signIn({required String email, required String password});
+  Future<UserEntity> register({required String email, required String password});
   Future<void> deleteUser();
 }

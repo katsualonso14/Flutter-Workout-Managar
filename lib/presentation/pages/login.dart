@@ -1,10 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_workout_manager/domain/entities/user_entity.dart';
 import 'package:flutter_workout_manager/presentation/controller/sign_in_user_notifier.dart';
+import 'package:flutter_workout_manager/presentation/controller/user_register_provider.dart';
 import 'package:flutter_workout_manager/presentation/pages/no_login_calender_page.dart';
 import 'package:flutter_workout_manager/presentation/controller/login_form_providers.dart';
 import 'package:flutter_workout_manager/presentation/widgets/medium_ad_banner.dart';
+import 'package:flutter_workout_manager/presentation/widgets/test_field/mail_address_text_form_field.dart';
+import 'package:flutter_workout_manager/presentation/widgets/test_field/password_text_form_filed.dart';
 
 class LogIn extends ConsumerWidget {
   const LogIn({Key? key}) : super(key: key);
@@ -24,41 +28,20 @@ class LogIn extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                TextFormField(
-                  // テキスト入力のラベルを設定
-                  decoration: const InputDecoration(labelText: "Mail Address"),
-                  onChanged: (String value) {
-                    userEmail.state = value;
-                  },
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: "Password(6 characters or more)"),
-                  // パスワードが見えないようにする
-                  obscureText: true,
-                  onChanged: (String value) {
-                    userPassword.state = value;
-                  },
-                ),
+                const MailAddressTextFormField(),
+                const PasswordTextFormFiled(),
                 const SizedBox(height: 30,),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                       onPressed: () async {
                         try {
-                          // Authのインスタンス生成
-                          final FirebaseAuth auth = FirebaseAuth.instance;
-                          // createUserWithEmailAndPasswordメソッド でユーザー登録を行う
-                          final UserCredential result =
-                              await auth.createUserWithEmailAndPassword(
-                            email: userEmail.state,
-                            password: userPassword.state,
-                          );
-
-                          // 登録したユーザー情報
-                          final User? user = result.user;
+                          // ユーザー登録
+                             await ref.read(userRegisterProvider.notifier)
+                                  .registerUser(userEmail.state, userPassword.state);
                           if( context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('User registered successfully: ${user?.email}')),
+                              SnackBar(content: Text('User registered successfully: ${userEmail.state}')),
                             );
                           }
                         } catch (e) {
