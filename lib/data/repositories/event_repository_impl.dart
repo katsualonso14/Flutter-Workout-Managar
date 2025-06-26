@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_workout_manager/data/models/event_model.dart';
 import 'package:flutter_workout_manager/domain/entities/event_entity.dart';
 import 'package:flutter_workout_manager/domain/repositories/event_repository.dart';
 
@@ -28,17 +30,29 @@ class EventRepositoryImpl implements EventRepository {
       final snapshot = await Future.wait(doc);
 
       for (var doc in snapshot) {
-        final data = doc.data()!;
-        final event = data['event'];
-        final eventDay = data['date'].toDate();
+        // Firebase操作・バグで整合性が取れない場合があるので、存在チェックを行う
+        if (!doc.exists) {
+          debugPrint('❌ document not found: ${doc.reference.id}');
+          continue; // 存在しないならスキップ
+        }
+
+        final data = doc.data();
+        if (data == null) continue; // 念のため null check
+
+        //TODO: 旧の自分アカウントの場合、nullエラーになるので対応
+        final model = EventModel.fromJson(data).toEntity();
+        final eventDay = model.eventDay;
+        // イベントの日付をDateTime型に変換
         final date = DateTime(eventDay.year, eventDay.month, eventDay.day);
+        // タイムゾーンを考慮してUTCに変換
         final eventDateTime = date.add(date.timeZoneOffset).toUtc();
 
+        // TODO: ここの処理をUseCaseに移動
         // 日付が同じなら同じリストに追加
         if (events.containsKey(eventDateTime)) {
-          events[eventDateTime]!.add(event);
+          events[eventDateTime]!.add(model.event);
         } else {
-          events[eventDateTime] = [event];
+          events[eventDateTime] = [model.event];
         }
       }
 
@@ -51,7 +65,7 @@ class EventRepositoryImpl implements EventRepository {
 
   @override
 // イベントを追加
-  Future<void> addEvent(String event, EventEntity newEvent) async {
+  Future<void> addEvent(EventEntity newEvent) async {
     final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
     final firebaseUsers = FirebaseFirestore.instance.collection('users');
     final userEvent = firebaseUsers.doc(newEvent.userid).collection('myEvents');
@@ -59,12 +73,13 @@ class EventRepositoryImpl implements EventRepository {
     // イベントの日付をTimeStamp型に変換
     final eventDate = Timestamp.fromDate(newEvent.eventDay);
 
-    final result = await firebaseEvents.add({
-      'date': eventDate,
-      'event': event,
-      'userid': newEvent.userid,
-    });
+    // Entity → Model に変換
+    final model = EventModel.fromEntity(newEvent);
 
+    // イベント追加
+    final result = await firebaseEvents.add(model.toJson());
+
+    //TODO: data層用の型を作成し変換(UserMyEventModelなど)
     userEvent.doc(result.id).set({
       'eventTime': eventDate,
       'event_id': result.id,

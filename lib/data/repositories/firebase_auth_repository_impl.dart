@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_workout_manager/domain/entities/auth_result_entity.dart';
 import 'package:flutter_workout_manager/domain/entities/user_entity.dart';
 import 'package:flutter_workout_manager/domain/repositories/auth_repository.dart';
 
@@ -16,16 +15,25 @@ class FirebaseAuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<AuthResultEntity> signIn({required String email, required String password}) async {
+  Future<UserEntity> signIn({required String email, required String password}) async {
     final userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
     final firebaseUser = userCredential.user;
     if (firebaseUser == null) {
       throw Exception('Sign in failed: User credential is null');
     }
-    return AuthResultEntity(
-      user: UserEntity(uid: firebaseUser.uid, email: firebaseUser.email),
-    );
+    return UserEntity(uid: firebaseUser.uid, email: firebaseUser.email);
   }
+
+  @override
+  Future<UserEntity> register({required String email, required String password}) async {
+    final userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+    final firebaseUser = userCredential.user;
+    if (firebaseUser == null) {
+      throw Exception('Registration failed: User credential is null');
+    }
+    return UserEntity(uid: firebaseUser.uid, email: firebaseUser.email);
+  }
+
 
   @override
   Future<void> deleteUser() async {

@@ -6,5 +6,5 @@ class AddEventUseCase {
 
   AddEventUseCase(this.repository);
 
-  Future<void> call(String event, EventEntity newEvent) => repository.addEvent(event, newEvent);
+  Future<void> call(EventEntity newEvent) => repository.addEvent(newEvent);
 }

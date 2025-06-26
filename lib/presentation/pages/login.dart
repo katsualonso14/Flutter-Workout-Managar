@@ -1,10 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_workout_manager/presentation/controller/sign_in_user_notifier.dart';
+import 'package:flutter_workout_manager/presentation/controller/user_register_provider.dart';
 import 'package:flutter_workout_manager/presentation/pages/no_login_calender_page.dart';
 import 'package:flutter_workout_manager/presentation/controller/login_form_providers.dart';
 import 'package:flutter_workout_manager/presentation/widgets/medium_ad_banner.dart';
+import 'package:flutter_workout_manager/presentation/widgets/test_field/mail_address_text_form_field.dart';
+import 'package:flutter_workout_manager/presentation/widgets/test_field/password_text_form_filed.dart';
 
 class LogIn extends ConsumerWidget {
   const LogIn({Key? key}) : super(key: key);
@@ -13,7 +15,6 @@ class LogIn extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userEmail = ref.watch(emailProvider.state);
     final userPassword = ref.watch(passwordProvider.state);
-    final infoText = ref.watch(infoTextProvider.state);
     final signInState = ref.watch(signInUserNotifierProvider);
 
     return Column(
@@ -25,48 +26,46 @@ class LogIn extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                TextFormField(
-                  // テキスト入力のラベルを設定
-                  decoration: const InputDecoration(labelText: "Mail Address"),
-                  onChanged: (String value) {
-                    userEmail.state = value;
-                  },
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(labelText: "Password(6 characters or more)"),
-                  // パスワードが見えないようにする
-                  obscureText: true,
-                  onChanged: (String value) {
-                    userPassword.state = value;
-                  },
-                ),
-                Container(
+                const MailAddressTextFormField(),
+                const PasswordTextFormFiled(),
+                const SizedBox(height: 30,),
+                SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                       onPressed: () async {
                         try {
-                          // Authのインスタンス生成
-                          final FirebaseAuth auth = FirebaseAuth.instance;
-                          // createUserWithEmailAndPasswordメソッド でユーザー登録を行う
-                          final UserCredential result =
-                              await auth.createUserWithEmailAndPassword(
-                            email: userEmail.state,
-                            password: userPassword.state,
-                          );
-
-                          // 登録したユーザー情報
-                          final User? user = result.user;
-                          infoText.state = 'The registration has been completed at the following email address.\n${user!.email}';
+                          // ユーザー登録
+                             await ref.read(userRegisterProvider.notifier)
+                                  .registerUser(userEmail.state, userPassword.state);
+                          if( context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('User registered successfully: ${userEmail.state}')),
+                            );
+                          }
                         } catch (e) {
                           // 登録に失敗した場合
-                          infoText.state = 'failed to register. Please try again.\n*Please enter a password of 6 characters or more.\n*Please enter a valid email address.';
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text(
+                                      'failed to register. Please try again.'
+                                      '\nPlease enter a password of 6 characters or more.'
+                                      '\nPlease enter a valid email address')),
+                            );
+                          }
                         }
                       },
-                      child: const Text('Register User Account')),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue, // ボタンの背景色
+                        foregroundColor: Colors.white, // ボタンの文字色
+                    ),
+                      child: const Text('Register User Account'),
+                  ),
+
                 ),
                 SizedBox(
                     width: double.infinity,
-                    child: OutlinedButton(
+                    child: ElevatedButton(
                       // 無効化（多重タップ防止）
                       onPressed: signInState.isLoading ? null : () async {
                               try {
@@ -74,12 +73,25 @@ class LogIn extends ConsumerWidget {
                                     .read(signInUserNotifierProvider.notifier)
                                     .signIn(
                                         userEmail.state, userPassword.state);
-                                infoText.state = 'Login successful';
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Login successful')),
+                                  );
+                                }
                               } catch (e) {
-                                infoText.state =
-                                    'Login failed. Please check your email and password.';
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'Login failed. Please check your email and password.')),
+                                  );
+                                }
                               }
                             },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.blueAccent,
+                      ),
                       child: signInState.isLoading ? const CircularProgressIndicator() : const Text('Login'),
                     )),
                 OutlinedButton(
@@ -90,9 +102,8 @@ class LogIn extends ConsumerWidget {
                           builder: (context) => const NoLoginCalendarPage()));
                     }
                 ),
-
-                Text(infoText.state),
-              const MediumAdBanner(),
+                const SizedBox(height: 30,),
+                const MediumAdBanner(),
               ],
             ),
           ),
