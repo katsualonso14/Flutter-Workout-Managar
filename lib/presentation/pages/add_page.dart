@@ -52,10 +52,7 @@ class AddPage extends HookConsumerWidget {
                     eventDay: selectedDay,
                     userid: uid,
                   );
-                  await ref.read(eventStateNotifierProvider.notifier).addEvent(
-                       pickerMenu.value == 'Other (Please Specify)' ? event : pickerMenu.value,
-                       newEvent,
-                  );
+                  await ref.read(eventStateNotifierProvider.notifier).addEvent(newEvent,);
                   editController.clear();
                   // trueを渡しデータ更新実施
                   Navigator.of(context).pop(true);

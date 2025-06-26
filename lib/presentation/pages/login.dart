@@ -1,7 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_workout_manager/domain/entities/user_entity.dart';
 import 'package:flutter_workout_manager/presentation/controller/sign_in_user_notifier.dart';
 import 'package:flutter_workout_manager/presentation/controller/user_register_provider.dart';
 import 'package:flutter_workout_manager/presentation/pages/no_login_calender_page.dart';
