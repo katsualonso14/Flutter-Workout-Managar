@@ -21,9 +21,8 @@ EventModel _$EventModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$EventModel {
   String get event => throw _privateConstructorUsedError;
-  @JsonKey(name: 'date')
   @TimestampConverter()
-  Timestamp get eventDay => throw _privateConstructorUsedError;
+  Timestamp get date => throw _privateConstructorUsedError;
   String get userid => throw _privateConstructorUsedError;
 
   /// Serializes this EventModel to a JSON map.
@@ -43,9 +42,7 @@ abstract class $EventModelCopyWith<$Res> {
       _$EventModelCopyWithImpl<$Res, EventModel>;
   @useResult
   $Res call(
-      {String event,
-      @JsonKey(name: 'date') @TimestampConverter() Timestamp eventDay,
-      String userid});
+      {String event, @TimestampConverter() Timestamp date, String userid});
 }
 
 /// @nodoc
@@ -64,7 +61,7 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
   @override
   $Res call({
     Object? event = null,
-    Object? eventDay = null,
+    Object? date = null,
     Object? userid = null,
   }) {
     return _then(_value.copyWith(
@@ -72,9 +69,9 @@ class _$EventModelCopyWithImpl<$Res, $Val extends EventModel>
           ? _value.event
           : event // ignore: cast_nullable_to_non_nullable
               as String,
-      eventDay: null == eventDay
-          ? _value.eventDay
-          : eventDay // ignore: cast_nullable_to_non_nullable
+      date: null == date
+          ? _value.date
+          : date // ignore: cast_nullable_to_non_nullable
               as Timestamp,
       userid: null == userid
           ? _value.userid
@@ -93,9 +90,7 @@ abstract class _$$EventModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String event,
-      @JsonKey(name: 'date') @TimestampConverter() Timestamp eventDay,
-      String userid});
+      {String event, @TimestampConverter() Timestamp date, String userid});
 }
 
 /// @nodoc
@@ -112,7 +107,7 @@ class __$$EventModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? event = null,
-    Object? eventDay = null,
+    Object? date = null,
     Object? userid = null,
   }) {
     return _then(_$EventModelImpl(
@@ -120,9 +115,9 @@ class __$$EventModelImplCopyWithImpl<$Res>
           ? _value.event
           : event // ignore: cast_nullable_to_non_nullable
               as String,
-      eventDay: null == eventDay
-          ? _value.eventDay
-          : eventDay // ignore: cast_nullable_to_non_nullable
+      date: null == date
+          ? _value.date
+          : date // ignore: cast_nullable_to_non_nullable
               as Timestamp,
       userid: null == userid
           ? _value.userid
@@ -137,7 +132,7 @@ class __$$EventModelImplCopyWithImpl<$Res>
 class _$EventModelImpl implements _EventModel {
   const _$EventModelImpl(
       {required this.event,
-      @JsonKey(name: 'date') @TimestampConverter() required this.eventDay,
+      @TimestampConverter() required this.date,
       required this.userid});
 
   factory _$EventModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -146,15 +141,14 @@ class _$EventModelImpl implements _EventModel {
   @override
   final String event;
   @override
-  @JsonKey(name: 'date')
   @TimestampConverter()
-  final Timestamp eventDay;
+  final Timestamp date;
   @override
   final String userid;
 
   @override
   String toString() {
-    return 'EventModel(event: $event, eventDay: $eventDay, userid: $userid)';
+    return 'EventModel(event: $event, date: $date, userid: $userid)';
   }
 
   @override
@@ -163,14 +157,13 @@ class _$EventModelImpl implements _EventModel {
         (other.runtimeType == runtimeType &&
             other is _$EventModelImpl &&
             (identical(other.event, event) || other.event == event) &&
-            (identical(other.eventDay, eventDay) ||
-                other.eventDay == eventDay) &&
+            (identical(other.date, date) || other.date == date) &&
             (identical(other.userid, userid) || other.userid == userid));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, event, eventDay, userid);
+  int get hashCode => Object.hash(runtimeType, event, date, userid);
 
   /// Create a copy of EventModel
   /// with the given fields replaced by the non-null parameter values.
@@ -191,9 +184,7 @@ class _$EventModelImpl implements _EventModel {
 abstract class _EventModel implements EventModel {
   const factory _EventModel(
       {required final String event,
-      @JsonKey(name: 'date')
-      @TimestampConverter()
-      required final Timestamp eventDay,
+      @TimestampConverter() required final Timestamp date,
       required final String userid}) = _$EventModelImpl;
 
   factory _EventModel.fromJson(Map<String, dynamic> json) =
@@ -202,9 +193,8 @@ abstract class _EventModel implements EventModel {
   @override
   String get event;
   @override
-  @JsonKey(name: 'date')
   @TimestampConverter()
-  Timestamp get eventDay;
+  Timestamp get date;
   @override
   String get userid;
 

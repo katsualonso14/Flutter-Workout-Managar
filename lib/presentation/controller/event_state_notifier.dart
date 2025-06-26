@@ -29,7 +29,7 @@ class EventStateNotifier extends _$EventStateNotifier {
     _deleteEvent = ref.read(deleteEventUseCaseProvider);
     _checkCount = ref.read(checkWeeklyEventCountUseCaseProvider);
 
-    return EventEntity(event: '', eventDay: DateTime.now(), userid: '');
+    return EventEntity(event: '', date: DateTime.now(), userid: '');
   }
 
   Future<List<String>> getMyEventIds(String uid) => _getMyEventIds(uid);

@@ -49,7 +49,7 @@ class AddPage extends HookConsumerWidget {
                 onPressed: () async {
                   EventEntity newEvent = EventEntity(
                     event: pickerMenu.value == 'Other (Please Specify)' ? event : pickerMenu.value,
-                    eventDay: selectedDay,
+                    date: selectedDay,
                     userid: uid,
                   );
                   await ref.read(eventStateNotifierProvider.notifier).addEvent(newEvent,);
