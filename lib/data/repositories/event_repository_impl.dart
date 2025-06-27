@@ -4,6 +4,7 @@ import 'package:flutter_workout_manager/data/models/event_model.dart';
 import 'package:flutter_workout_manager/domain/entities/event_entity.dart';
 import 'package:flutter_workout_manager/domain/repositories/event_repository.dart';
 
+/// Firebaseのイベント送受信するData層実装
 class EventRepositoryImpl implements EventRepository {
   final FirebaseFirestore firestore;
 
@@ -15,15 +16,14 @@ class EventRepositoryImpl implements EventRepository {
     return myEvents.docs.map((e) => e.id).toList();
   }
 
+  // Firebase一致したものを取得
   @override
-  // Firebase一致したものを取得　
   Future<Map<DateTime, List<String>>?> getEventFromIds(String id) async {
     Map<DateTime, List<String>> events = {};
     final myEvents = await getMyEventIds(id);
 
     try {
-      final firebaseEvents = FirebaseFirestore.instance.collection(
-          'calendar_events');
+      final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
       final doc = myEvents.map((element) => firebaseEvents.doc(element).get())
           .toList();
       // 非同期処理を待つ
@@ -37,11 +37,12 @@ class EventRepositoryImpl implements EventRepository {
         }
 
         final data = doc.data();
-        if (data == null) continue; // 念のため null check
-
-        //TODO: 旧の自分アカウントの場合、nullエラーになるので対応
-        final model = EventModel.fromJson(data).toEntity();
-        final eventDay = model.eventDay;
+        if (data == null) continue;
+        // Json → Model に変換
+        final model = EventModel.fromJson(data);
+        // Model → Entity に変換
+        final entity = model.toEntity();
+        final eventDay = entity.date;
         // イベントの日付をDateTime型に変換
         final date = DateTime(eventDay.year, eventDay.month, eventDay.day);
         // タイムゾーンを考慮してUTCに変換
@@ -58,20 +59,20 @@ class EventRepositoryImpl implements EventRepository {
 
       return events;
     } on FirebaseException catch (e) {
-      print('自分の投稿取得失敗 $e'); //デバッグ用
+      debugPrint('FirebaseException: ${e.message}');
       return null;
     }
   }
 
+  // イベントを追加
   @override
-// イベントを追加
   Future<void> addEvent(EventEntity newEvent) async {
     final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
     final firebaseUsers = FirebaseFirestore.instance.collection('users');
     final userEvent = firebaseUsers.doc(newEvent.userid).collection('myEvents');
 
     // イベントの日付をTimeStamp型に変換
-    final eventDate = Timestamp.fromDate(newEvent.eventDay);
+    final eventDate = Timestamp.fromDate(newEvent.date);
 
     // Entity → Model に変換
     final model = EventModel.fromEntity(newEvent);
@@ -86,8 +87,8 @@ class EventRepositoryImpl implements EventRepository {
     });
   }
 
-  @override
   // イベントを削除
+  @override
   Future<void> deleteEvent(String uid, String eventName) async {
     final firebaseUsers = FirebaseFirestore.instance.collection('users');
     final userEvent = firebaseUsers.doc(uid).collection('myEvents');
@@ -99,8 +100,8 @@ class EventRepositoryImpl implements EventRepository {
     await firebaseEvents.doc(docs.id).delete();
   }
 
+  // Check weekly event count
   @override
-  // check weekly event count
   Future<int> checkWeeklyEventCount(String uid, String duration) async {
     var eventDays = [];
     final myEvents = await getMyEventIds(uid);
@@ -110,8 +111,7 @@ class EventRepositoryImpl implements EventRepository {
     final yearAgo = now.subtract(const Duration(days: 365));
 
     for(String element in myEvents) {
-      final firebaseEvents = FirebaseFirestore.instance.collection(
-          'calendar_events');
+      final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
       final doc = await firebaseEvents.doc(element).get();
 
       final data = doc.data()!;

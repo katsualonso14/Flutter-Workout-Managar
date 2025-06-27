@@ -14,8 +14,7 @@ part 'event_model.g.dart';
 abstract class EventModel with _$EventModel {
   const factory EventModel({
     required String event,
-    @JsonKey(name: 'date')
-    @TimestampConverter() required Timestamp eventDay,
+    @TimestampConverter() required Timestamp date,
     required String userid,
   }) = _EventModel;
 
@@ -23,7 +22,7 @@ abstract class EventModel with _$EventModel {
 
   factory EventModel.fromEntity(EventEntity entity) => EventModel(
     event: entity.event,
-    eventDay: Timestamp.fromDate(entity.eventDay),
+    date: Timestamp.fromDate(entity.date),
     userid: entity.userid,
   );
 }
@@ -31,7 +30,7 @@ abstract class EventModel with _$EventModel {
 extension EventMapper on EventModel {
   EventEntity toEntity() => EventEntity(
     event: event,
-    eventDay: eventDay.toDate(),
+    date: date.toDate(),
     userid: userid,
   );
 }
