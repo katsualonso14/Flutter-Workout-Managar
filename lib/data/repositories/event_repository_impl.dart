@@ -38,23 +38,15 @@ class EventRepositoryImpl implements EventRepository {
 
         final data = doc.data();
         if (data == null) continue;
-        // Json → Model に変換
+        // Json → Model
         final model = EventModel.fromJson(data);
-        // Model → Entity に変換
+        // Model → Entity
         final entity = model.toEntity();
         final eventDay = entity.date;
-        // イベントの日付をDateTime型に変換
         final date = DateTime(eventDay.year, eventDay.month, eventDay.day);
         // タイムゾーンを考慮してUTCに変換
         final eventDateTime = date.add(date.timeZoneOffset).toUtc();
-
-        // TODO: ここの処理をUseCaseに移動
-        // 日付が同じなら同じリストに追加
-        if (events.containsKey(eventDateTime)) {
-          events[eventDateTime]!.add(model.event);
-        } else {
-          events[eventDateTime] = [model.event];
-        }
+        events.putIfAbsent(eventDateTime, () => []).add(model.event);
       }
 
       return events;
