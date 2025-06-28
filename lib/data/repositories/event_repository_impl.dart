@@ -16,10 +16,11 @@ class EventRepositoryImpl implements EventRepository {
     return myEvents.docs.map((e) => e.id).toList();
   }
 
-  // Firebase一致したものを取得
+  // ユーザのイベントID・イベント名が紐づく形で保持(全体のイベントコレクションから)
+  // User情報が持っているmyEventのIDと照合してイベントを取得
   @override
-  Future<Map<DateTime, List<String>>?> getEventFromIds(String id) async {
-    Map<DateTime, List<String>> events = {};
+  Future<Map<DateTime, List<Map<String, String>>>?> getEventFromIds(String id) async {
+    Map<DateTime, List<Map<String, String>>> events = {};
     final myEvents = await getMyEventIds(id);
 
     try {
@@ -46,7 +47,12 @@ class EventRepositoryImpl implements EventRepository {
         final date = DateTime(eventDay.year, eventDay.month, eventDay.day);
         // タイムゾーンを考慮してUTCに変換
         final eventDateTime = date.add(date.timeZoneOffset).toUtc();
-        events.putIfAbsent(eventDateTime, () => []).add(model.event);
+
+        //TODO: data層用の型を作成し変換(UserMyEventModelなど)
+        events.putIfAbsent(eventDateTime, () => []).add({
+          "event_id": doc.id,
+          "event": model.event,
+        });
       }
 
       return events;
@@ -81,12 +87,12 @@ class EventRepositoryImpl implements EventRepository {
 
   // イベントを削除
   @override
-  Future<void> deleteEvent(String uid, String eventName) async {
+  Future<void> deleteEvent(String uid, String eventId) async {
     final firebaseUsers = FirebaseFirestore.instance.collection('users');
     final userEvent = firebaseUsers.doc(uid).collection('myEvents');
     final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
     // イベント名が一致するものを取得
-    final event = await firebaseEvents.where('event', isEqualTo: eventName).get();
+    final event = await firebaseEvents.where(FieldPath.documentId, isEqualTo: eventId).get();
     final docs = event.docs.first; // 一致したものの最初のものだけ削除(同じ名前のイベントは削除しない)
     await userEvent.doc(docs.id).delete();
     await firebaseEvents.doc(docs.id).delete();
