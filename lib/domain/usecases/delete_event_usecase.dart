@@ -5,5 +5,5 @@ class DeleteEventUseCase {
 
   DeleteEventUseCase(this.repository);
 
-  Future<void> call(String uid, String eventName) => repository.deleteEvent(uid, eventName);
+  Future<void> call(String uid, String eventId) => repository.deleteEvent(uid, eventId);
 }

@@ -19,9 +19,9 @@ class CalenderPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final formatIndex = useState(0); // カレンダーフォーマット変更用
-    final _focusedDay = useState(DateTime.now()); // 初期値が今日日付のuseState
+    final focusedDayState = useState(DateTime.now()); // 初期値が今日日付のuseState
     final eventStateNotifier = ref.watch(eventStateNotifierProvider.notifier);
-    final eventData = useState<Map<DateTime, List<String>>?>(null);
+    final eventData = useState<Map<DateTime, List<Map<String, String>>?>>({});
     final isLoading = useState(true); // ローディング用フラグ
 
     final data = ref.watch(authStateProvider).value; // FirebaseAuthのインスタンスを取得
@@ -34,7 +34,7 @@ class CalenderPage extends HookConsumerWidget {
     Future<void> fetchEventData() async {
       isLoading.value = true;
       final getData = await eventStateNotifier.getEventFromIds(data.uid);
-      eventData.value = getData;
+      eventData.value = getData ?? {};
       isLoading.value = false;
     }
 
@@ -45,8 +45,8 @@ class CalenderPage extends HookConsumerWidget {
     },const []);
 
     //　イベントカウント関数
-    int eventCount(Map<DateTime, List<String>> eventData) {
-      var eventCount = eventData[_focusedDay.value];
+    int eventCount(Map<DateTime, List<Map<String, String>>?> eventData) {
+      var eventCount = eventData[focusedDayState.value];
       if (eventCount == null) {
         return 0;
       } else {
@@ -62,9 +62,9 @@ class CalenderPage extends HookConsumerWidget {
                 TableCalendar(
                     firstDay: DateTime.utc(2023, 1, 1),
                     lastDay: DateTime.utc(2030, 12, 31),
-                    focusedDay: _focusedDay.value,
+                    focusedDay: focusedDayState.value,
                     eventLoader: (date) {
-                      return eventData.value![date] ?? [];
+                      return eventData.value[date] ?? [];
                     },
                     calendarFormat: _calendarFormat[formatIndex.value],
                     onFormatChanged: (format) {
@@ -73,28 +73,28 @@ class CalenderPage extends HookConsumerWidget {
                       }
                     },
                     selectedDayPredicate: (day) {
-                      return isSameDay(_focusedDay.value, day);
+                      return isSameDay(focusedDayState.value, day);
                     },
                     onDaySelected: (selectedDay, focusedDay) {
-                      _focusedDay.value = focusedDay;
+                      focusedDayState.value = focusedDay;
                     }),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: eventCount(eventData.value!),
+                    itemCount: eventCount(eventData.value),
                     itemBuilder: (context, index) {
-                      final events = eventData.value![_focusedDay.value] ?? [];
+                      final events = eventData.value[focusedDayState.value] ?? [];
                       if (index >= events.length) {
                         return const SizedBox.shrink();
                       }
                       return Dismissible(
-                        key: Key(events[index]),
+                        key: Key(events[index]['event_id']!),
                         onDismissed: (direction) async {
-                          await eventStateNotifier.deleteEvent(data.uid, events[index]);
+                          await eventStateNotifier.deleteEvent(data.uid, events[index]['event_id']!);
                           await fetchEventData();
                         },
                         child: Card(
                           child: ListTile(
-                            title: Text(events[index]),
+                            title: Text(events[index]['event'] ?? 'No Event'),
                           ),
                         ),
                       );
@@ -111,7 +111,7 @@ class CalenderPage extends HookConsumerWidget {
                             .push(MaterialPageRoute(builder: (context) {
                           return AddPage(
                               uid: data.uid,
-                              selectedDay: _focusedDay.value
+                              selectedDay: focusedDayState.value
                           );
                         }));
 

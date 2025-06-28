@@ -5,5 +5,5 @@ class GetEventFromIdsUseCase {
 
   GetEventFromIdsUseCase(this.repository);
 
-  Future<Map<DateTime, List<String>>?> call(String id) => repository.getEventFromIds(id);
+  Future<Map<DateTime, List<Map<String, String>>>?>  call(String id) => repository.getEventFromIds(id);
 }

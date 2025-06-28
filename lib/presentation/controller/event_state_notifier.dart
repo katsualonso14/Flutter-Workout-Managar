@@ -33,8 +33,8 @@ class EventStateNotifier extends _$EventStateNotifier {
   }
 
   Future<List<String>> getMyEventIds(String uid) => _getMyEventIds(uid);
-  Future<Map<DateTime, List<String>>?> getEventFromIds(String uid) => _getEventFromIds(uid);
+  Future<Map<DateTime, List<Map<String, String>>>?> getEventFromIds(String uid) => _getEventFromIds(uid);
   Future<void> addEvent(EventEntity newEvent) => _addEvent(newEvent);
-  Future<void> deleteEvent(String uid, String eventName) => _deleteEvent(uid, eventName);
+  Future<void> deleteEvent(String uid, String eventId) => _deleteEvent(uid, eventId);
   Future<int> checkWeeklyEventCount(String uid, String duration) => _checkCount(uid, duration);
 }

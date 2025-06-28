@@ -55,7 +55,9 @@ class AddPage extends HookConsumerWidget {
                   await ref.read(eventStateNotifierProvider.notifier).addEvent(newEvent,);
                   editController.clear();
                   // trueを渡しデータ更新実施
-                  Navigator.of(context).pop(true);
+                  if (context.mounted) {
+                    Navigator.of(context).pop(true);
+                  }
                 },
                 child: const Text('Register Event'),
               ),
