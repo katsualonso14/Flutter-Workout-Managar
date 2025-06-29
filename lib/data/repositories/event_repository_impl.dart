@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_workout_manager/data/models/event_model.dart';
 import 'package:flutter_workout_manager/domain/entities/event_entity.dart';
+import 'package:flutter_workout_manager/domain/entities/my_event_info_entity.dart';
 import 'package:flutter_workout_manager/domain/repositories/event_repository.dart';
 
 /// Firebaseのイベント送受信するData層実装
@@ -19,8 +20,8 @@ class EventRepositoryImpl implements EventRepository {
   // ユーザのイベントID・イベント名が紐づく形で保持(全体のイベントコレクションから)
   // User情報が持っているmyEventのIDと照合してイベントを取得
   @override
-  Future<Map<DateTime, List<Map<String, String>>>?> getEventFromIds(String id) async {
-    Map<DateTime, List<Map<String, String>>> events = {};
+  Future<Map<DateTime, List<MyEventInfoEntity>>> getEventFromIds(String id) async {
+    Map<DateTime, List<MyEventInfoEntity>> events = {};
     final myEvents = await getMyEventIds(id);
 
     try {
@@ -48,17 +49,19 @@ class EventRepositoryImpl implements EventRepository {
         // タイムゾーンを考慮してUTCに変換
         final eventDateTime = date.add(date.timeZoneOffset).toUtc();
 
-        //TODO: data層用の型を作成し変換(UserMyEventModelなど)
-        events.putIfAbsent(eventDateTime, () => []).add({
-          "event_id": doc.id,
-          "event": model.event,
-        });
+        // Model → Entity
+        events.putIfAbsent(eventDateTime, () => []).add(
+          MyEventInfoEntity(
+            eventId: doc.id,
+            event: model.event,
+          ),
+        );
       }
 
       return events;
     } on FirebaseException catch (e) {
       debugPrint('FirebaseException: ${e.message}');
-      return null;
+      return {};
     }
   }
 
