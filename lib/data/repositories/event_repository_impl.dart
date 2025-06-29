@@ -78,10 +78,9 @@ class EventRepositoryImpl implements EventRepository {
     // Entity → Model に変換
     final model = EventModel.fromEntity(newEvent);
 
-    // イベント追加
+    // イベントをCalendarEventコレクションに追加
     final result = await firebaseEvents.add(model.toJson());
-
-    //TODO: data層用の型を作成し変換(UserMyEventModelなど)
+    // イベントをMyEventsコレクションに追加
     userEvent.doc(result.id).set({
       'eventTime': eventDate,
       'event_id': result.id,
