@@ -7,5 +7,3 @@ linter:
     prefer_single_quotes: true # シングルクオートのみを使用
     always_use_package_imports: true # 相対パスでのインポート禁止
     avoid_annotating_with_dynamic: true # dynamicで型を注釈することを避ける
-    unused_import: true # 未使用のimportを避ける
-    unused_local_variable: true # 未使用のローカル変数を避ける
