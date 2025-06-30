@@ -11,7 +11,7 @@ class CheckPasswordDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextEditingController passwordController = TextEditingController();
 
-    void _reauthenticateUser(BuildContext context, String password) async {
+    void reauthenticateUser(BuildContext context, String password) async {
       User? user = FirebaseAuth.instance.currentUser;
 
       if (user != null) {
@@ -20,14 +20,16 @@ class CheckPasswordDialog extends StatelessWidget {
           final credential = EmailAuthProvider.credential(email: email, password: password);
           await user.reauthenticateWithCredential(credential);
 
-          showDialog(
-              context: context,
-              builder: (context) {
-                return const DeleteSuccessDialog();
-              });
+          if (context.mounted) {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return const DeleteSuccessDialog();
+                });
+          }
 
         } catch (e) {
-          print('Re-authentication failed: $e');
+          debugPrint('Re-authentication failed: $e');
         }
       }
     }
@@ -51,7 +53,7 @@ class CheckPasswordDialog extends StatelessWidget {
             final password = passwordController.text;
             if (password.isNotEmpty) {
               Navigator.pop(context);  // Close the dialog
-              _reauthenticateUser(parentContext, password);  // Pass the parent context
+              reauthenticateUser(parentContext, password);  // Pass the parent context
             } else {
               ScaffoldMessenger.of(parentContext).showSnackBar(
                 const SnackBar(content: Text('Please enter a password')),

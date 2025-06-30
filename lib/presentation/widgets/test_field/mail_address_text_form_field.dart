@@ -8,10 +8,10 @@ class MailAddressTextFormField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userEmail = ref.watch(emailProvider.state);
+    final userEmail = ref.watch(emailProvider.notifier);
     return TextFormField(
       // テキスト入力のラベルを設定
-      decoration: const InputDecoration(labelText: "Mail Address"),
+      decoration: const InputDecoration(labelText: 'Mail Address'),
       onChanged: (String value) {
         userEmail.state = value;
       },

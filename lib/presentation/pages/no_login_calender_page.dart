@@ -11,7 +11,7 @@ class NoLoginCalendarPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final formatIndex = useState(0);
-    final _focusedDay = useState(DateTime.now());
+    final focusedDayState = useState(DateTime.now());
     final calendarFormat = [
       CalendarFormat.month,
       CalendarFormat.twoWeeks,
@@ -44,10 +44,10 @@ class NoLoginCalendarPage extends HookWidget {
                 }
               },
               selectedDayPredicate: (day) {
-                return isSameDay(_focusedDay.value, day);
+                return isSameDay(focusedDayState.value, day);
               },
               onDaySelected: (selectedDay, focusedDay) {
-                _focusedDay.value = focusedDay;
+                focusedDayState.value = focusedDay;
               }),
           Expanded(
             child: ListView.builder(

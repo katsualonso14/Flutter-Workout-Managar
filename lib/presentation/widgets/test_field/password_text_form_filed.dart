@@ -8,9 +8,9 @@ class PasswordTextFormFiled extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userPassword = ref.watch(passwordProvider.state);
+    final userPassword = ref.watch(passwordProvider.notifier);
     return TextFormField(
-      decoration: const InputDecoration(labelText: "Password(6 characters or more)"),
+      decoration: const InputDecoration(labelText: 'Password(6 characters or more)'),
       // パスワードが見えないようにする
       obscureText: true,
       onChanged: (String value) {
