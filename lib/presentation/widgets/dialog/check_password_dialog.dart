@@ -1,6 +1,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_workout_manager/core/logger.dart';
 import 'package:flutter_workout_manager/presentation/widgets/dialog/delete_success_dialog.dart';
 
 class CheckPasswordDialog extends StatelessWidget {
@@ -29,7 +30,7 @@ class CheckPasswordDialog extends StatelessWidget {
           }
 
         } catch (e) {
-          debugPrint('Re-authentication failed: $e');
+          logger.e('Re-authentication failed, error: $e');
         }
       }
     }
