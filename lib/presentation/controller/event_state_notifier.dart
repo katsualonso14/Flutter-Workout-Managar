@@ -1,4 +1,5 @@
 import 'package:flutter_workout_manager/domain/entities/event_entity.dart';
+import 'package:flutter_workout_manager/domain/entities/my_event_info_entity.dart';
 import 'package:flutter_workout_manager/domain/usecases/add_event_usecase.dart';
 import 'package:flutter_workout_manager/domain/usecases/check_weekly_event_count_usecase.dart';
 import 'package:flutter_workout_manager/domain/usecases/delete_event_usecase.dart';
@@ -33,7 +34,7 @@ class EventStateNotifier extends _$EventStateNotifier {
   }
 
   Future<List<String>> getMyEventIds(String uid) => _getMyEventIds(uid);
-  Future<Map<DateTime, List<Map<String, String>>>?> getEventFromIds(String uid) => _getEventFromIds(uid);
+  Future<Map<DateTime, List<MyEventInfoEntity>>> getEventFromIds(String uid) => _getEventFromIds(uid);
   Future<void> addEvent(EventEntity newEvent) => _addEvent(newEvent);
   Future<void> deleteEvent(String uid, String eventId) => _deleteEvent(uid, eventId);
   Future<int> checkWeeklyEventCount(String uid, String duration) => _checkCount(uid, duration);

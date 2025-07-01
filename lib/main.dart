@@ -6,8 +6,8 @@ import 'package:flutter_workout_manager/presentation/widgets/dialog/logout_alert
 import 'package:flutter_workout_manager/presentation/widgets/navigation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'core/firebase_options.dart';
-import 'presentation/widgets/dialog/delete_check_dialog.dart';
+import 'package:flutter_workout_manager/core/firebase_options.dart';
+import 'package:flutter_workout_manager/presentation/widgets/dialog/delete_check_dialog.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,7 +55,7 @@ class App extends HookConsumerWidget {
               onPressed: () {
                 showDialog(
                     context: context,
-                    builder: (context) => DeleteCheckDialog()
+                    builder: (context) => const DeleteCheckDialog()
                 );
               },
             ),

@@ -13,7 +13,9 @@ class DeleteSuccessDialog extends StatelessWidget {
           TextButton(
             onPressed: () async {
               await FirebaseAuth.instance.currentUser!.delete();
-              Navigator.pop(context);
+              if(context.mounted) {
+                Navigator.pop(context);
+              }
             },
             child: const Text('OK'),
           ),

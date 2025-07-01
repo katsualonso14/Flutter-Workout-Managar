@@ -13,8 +13,8 @@ class LogIn extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userEmail = ref.watch(emailProvider.state);
-    final userPassword = ref.watch(passwordProvider.state);
+    final userEmail = ref.watch(emailProvider.notifier);
+    final userPassword = ref.watch(passwordProvider.notifier);
     final signInState = ref.watch(signInUserNotifierProvider);
 
     return Column(

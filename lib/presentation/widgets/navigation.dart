@@ -11,7 +11,7 @@ class Navigation extends ConsumerWidget {
   const Navigation({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var viewState = ref.watch(naviProvider.state);
+    var viewState = ref.watch(naviProvider.notifier);
     final data = ref.watch(authStateProvider).value; // FirebaseAuthのインスタンスを取得
 
     if (data == null) {

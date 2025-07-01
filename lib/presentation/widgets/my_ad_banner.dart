@@ -20,11 +20,11 @@ class MyAdBanner extends HookWidget {
         request: const AdRequest(),
         listener: BannerAdListener(
           onAdLoaded: (Ad ad) {
-            print('ad loaded!');
+            debugPrint('ad loaded!');
             isAdLoaded.value = true;
           },
           onAdFailedToLoad: (Ad ad, LoadAdError error) {
-            print('ad failed to load: $error');
+            debugPrint('ad failed to load: $error');
             ad.dispose();
           },
         ),
