@@ -25,7 +25,7 @@ class MediumAdBanner extends HookWidget {
             isAdLoaded.value = true;
           },
           onAdFailedToLoad: (Ad ad, LoadAdError error) {
-            logger.e('ad failed to load',  error: error);
+            logger.e('ad failed to load', error: error);
             ad.dispose();
           },
         ),
