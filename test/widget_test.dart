@@ -7,6 +7,7 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_workout_manager/core/logger.dart';
 
 import 'package:flutter_workout_manager/main.dart';
 
@@ -18,5 +19,12 @@ void main() {
     // アプリ名が表示されていることを確認
     expect(find.text('0'), findsNothing);
     expect(find.text('Home Fitness Manager'), findsOneWidget);
+
   });
+
+  tearDownAll((){
+    logger.i('テスト終了');
+  });
+
+
 }

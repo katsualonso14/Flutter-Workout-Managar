@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_workout_manager/core/logger.dart';
 import 'package:flutter_workout_manager/data/models/event_model.dart';
 import 'package:flutter_workout_manager/domain/entities/event_entity.dart';
 import 'package:flutter_workout_manager/domain/entities/my_event_info_entity.dart';
@@ -34,7 +34,7 @@ class EventRepositoryImpl implements EventRepository {
       for (var doc in snapshot) {
         // Firebase操作・バグで整合性が取れない場合があるので、存在チェックを行う
         if (!doc.exists) {
-          debugPrint('❌ document not found: ${doc.reference.id}');
+          logger.d('document not found: ${doc.reference.id}');
           continue; // 存在しないならスキップ
         }
 
@@ -60,7 +60,7 @@ class EventRepositoryImpl implements EventRepository {
 
       return events;
     } on FirebaseException catch (e) {
-      debugPrint('FirebaseException: ${e.message}');
+      logger.e('FirebaseException', error: e);
       return {};
     }
   }

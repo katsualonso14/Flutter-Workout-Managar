@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_workout_manager/core/logger.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class MediumAdBanner extends HookWidget {
@@ -20,11 +21,11 @@ class MediumAdBanner extends HookWidget {
         request: const AdRequest(),
         listener: BannerAdListener(
           onAdLoaded: (Ad ad) {
-            debugPrint('ad loaded!');
+            logger.d('ad loaded!');
             isAdLoaded.value = true;
           },
           onAdFailedToLoad: (Ad ad, LoadAdError error) {
-            debugPrint('ad failed to load: $error');
+            logger.e('ad failed to load',  error: error);
             ad.dispose();
           },
         ),
