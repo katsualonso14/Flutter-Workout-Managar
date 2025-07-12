@@ -11,7 +11,7 @@ class Navigation extends ConsumerWidget {
   const Navigation({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var viewState = ref.watch(naviProvider.notifier);
+    final viewState = ref.watch(naviProvider);
     final data = ref.watch(authStateProvider).value; // FirebaseAuthのインスタンスを取得
 
     if (data == null) {
@@ -19,24 +19,28 @@ class Navigation extends ConsumerWidget {
     }
 
     final pages = [
-       CalenderPage(),
-       CountPage(data: data),
+      CalenderPage(),
+      CountPage(data: data),
     ];
 
     return Scaffold(
-      body: pages[viewState.state.index],
+      body: pages[viewState.index],
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           const MyAdBanner(),
           BottomNavigationBar(
-              items: const [
-                BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: 'Calender'),
-                BottomNavigationBarItem(icon: Icon(Icons.add_chart), label: 'Count'),
-              ],
-            currentIndex: viewState.state.index,
+            items: const [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.calendar_month), label: 'Calender'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.add_chart), label: 'Count'),
+            ],
+            currentIndex: viewState.index,
             onTap: (int index) {
-                viewState.state = ViewType.values[index];
+              ref.read(naviProvider.notifier).update(
+                    (state) => ViewType.values[index],
+                  );
             },
           ),
         ],
