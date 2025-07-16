@@ -45,9 +45,7 @@ class AddPage extends HookConsumerWidget {
               ? TextField(
                   controller: editController,
                   onChanged: (value) {
-                    event = pickerMenu.value == 'Other (Please Specify)'
-                        ? value
-                        : pickerMenu.value;
+                    event = value;
                   },
                 )
               : const SizedBox.shrink(),
