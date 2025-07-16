@@ -1,20 +1,91 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_workout_manager/core/logger.dart';
+import 'package:flutter_workout_manager/domain/entities/user_entity.dart';
 import 'package:flutter_workout_manager/main.dart';
+import 'package:flutter_workout_manager/presentation/controller/auth_providers.dart';
+import 'package:flutter_workout_manager/presentation/controller/event_state_notifier.dart';
+import 'package:flutter_workout_manager/presentation/pages/login.dart';
+import 'package:flutter_workout_manager/presentation/widgets/navigation.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import 'data/mock_event_state_notifier.dart';
+
+/// ユーザー判定の伴うUIチェック
+//TODO: この雛形を自分アプリに合わせて修正
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+  testWidgets('ログイン済みならNavigationを表示', (tester) async {
+    // テスト用のユーザー
+    const testId = 'test_id';
+    const testMailAddress = 'test@test.com';
+    // テスト用 Provider の override
+    await tester.pumpWidget(ProviderScope(
+      overrides: [
+        authStateProvider.overrideWith((ref) {
+          return Stream.value(UserEntity(uid: testId, email: testMailAddress));
+        }),
+        // Navigation/CalenderPageで使用するproviderをモックに置き換え
+        eventStateNotifierProvider.overrideWith(() {
+          return MockEventStateNotifier();
+        }),
+      ],
+      child: const MaterialApp(home: App()),
+    ));
 
-    // 0がないことを確認する
-    expect(find.text('0'), findsNothing);
-    // アプリ名が表示されていることを確認
-    expect(find.text('Home Fitness Manager'), findsOneWidget);
+    // ビルドが終わるまで呼び続ける
+    await tester.pumpAndSettle();
+
+    // Navigation が表示されているか
+    expect(find.byType(Navigation), findsOneWidget);
+    expect(find.byType(LogIn), findsNothing);
   });
 
-  tearDownAll(() {
-    logger.i('テスト終了');
+  testWidgets('未ログインならLogInを表示', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authStateProvider.overrideWith((ref) => Stream.value(null)),
+        ],
+        child: const MaterialApp(home: App()),
+      ),
+    );
+
+    // ビルドが終わるまで呼び続ける
+    await tester.pumpAndSettle();
+
+    expect(find.byType(LogIn), findsOneWidget);
+    expect(find.byType(Navigation), findsNothing);
   });
+
+  // testWidgets('ローディング状態ならインジケータを表示', (tester) async {
+  //   await tester.pumpWidget(
+  //     ProviderScope(
+  //       overrides: [
+  //         authStateProvider.overrideWith(
+  //           (ref) => Stream.value(null), // ログイン状態ではない
+  //         ),
+  //       ],
+  //       child: const MaterialApp(home: App()),
+  //     ),
+  //   );
+  //
+  //   await tester.pumpAndSettle();
+  //
+  //   expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  // });
+
+  //
+  // testWidgets('エラーならエラーテキストを表示', (tester) async {
+  //   await tester.pumpWidget(
+  //     ProviderScope(
+  //       overrides: [
+  //         authStateProvider.overrideWithValue(AsyncError(Exception())),
+  //       ],
+  //       child: const MaterialApp(home: YourWidget()),
+  //     ),
+  //   );
+  //
+  //   await tester.pump();
+  //
+  //   expect(find.text('エラーが発生しました'), findsOneWidget);
+  // });
 }
