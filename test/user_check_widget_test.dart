@@ -63,10 +63,11 @@ void main() {
       ],
       child: const MaterialApp(home: App()),
     ));
-    // 非同期処理の完了を待ちつつPump(UI描画)
-    await tester.pump(const Duration(seconds: 1));
-
+    // emit前のローディング状態で確認
+    await tester.pump(const Duration(milliseconds: 100));
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    await tester.pumpAndSettle(); // pending Timer を消化して安全にテスト終了
   });
 
   testWidgets('エラーならエラーテキストを表示', (tester) async {
