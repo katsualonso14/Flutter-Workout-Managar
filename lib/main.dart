@@ -1,13 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_workout_manager/core/firebase_options.dart';
 import 'package:flutter_workout_manager/presentation/controller/auth_providers.dart';
 import 'package:flutter_workout_manager/presentation/pages/login.dart';
+import 'package:flutter_workout_manager/presentation/widgets/dialog/delete_check_dialog.dart';
 import 'package:flutter_workout_manager/presentation/widgets/dialog/logout_alert_dialog.dart';
 import 'package:flutter_workout_manager/presentation/widgets/navigation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_workout_manager/core/firebase_options.dart';
-import 'package:flutter_workout_manager/presentation/widgets/dialog/delete_check_dialog.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,10 +21,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: App()
-    );
+    return const MaterialApp(debugShowCheckedModeBanner: false, home: App());
   }
 }
 
@@ -35,48 +32,42 @@ class App extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userCheck = ref.watch(authStateProvider);
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Home Fitness Manager', style: TextStyle(color: Colors.blue, fontStyle: FontStyle.italic)),
-          actions: [
-            // ログインアウトボタン
-            IconButton(
-              icon: const Icon(Icons.logout),
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return const LogoutAlertDialog();
-                    }
-                );
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (context) => const DeleteCheckDialog()
-                );
-              },
-            ),
-          ],
-        ),
-
-        body: userCheck.when(
-            error: (error, stackTrace) {
-              return const Center(child: Text('エラーが発生しました'));
+      appBar: AppBar(
+        title: const Text('Home Fitness Manager',
+            style: TextStyle(color: Colors.blue, fontStyle: FontStyle.italic)),
+        actions: [
+          // ログインアウトボタン
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return const LogoutAlertDialog();
+                  });
             },
-            loading: () {
-              return const Center(child: CircularProgressIndicator());
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (context) => const DeleteCheckDialog());
             },
-            data: (data) {
-              if (data != null) {
-                return const Navigation();
-              } else {
-                return const LogIn();
-              }
-            }
-        ),
-      );
+          ),
+        ],
+      ),
+      body: userCheck.when(error: (error, stackTrace) {
+        return const Center(child: Text('エラーが発生しました'));
+      }, loading: () {
+        return const Center(child: CircularProgressIndicator());
+      }, data: (data) {
+        if (data != null) {
+          return const Navigation();
+        } else {
+          return const LogIn();
+        }
+      }),
+    );
   }
 }
