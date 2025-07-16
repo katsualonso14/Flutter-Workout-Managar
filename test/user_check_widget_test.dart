@@ -9,17 +9,15 @@ import 'package:flutter_workout_manager/presentation/widgets/navigation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'data/mock_event_state_notifier.dart';
+import 'test_user.dart';
 
 /// Firebaseユーザー判定のUIチェック
 void main() {
   testWidgets('ログイン済みならNavigationを表示', (tester) async {
-    // テスト用のユーザー
-    const testId = 'test_id';
-    const testMailAddress = 'test@test.com';
     await tester.pumpWidget(ProviderScope(
       overrides: [
         authStateProvider.overrideWith((ref) {
-          return Stream.value(UserEntity(uid: testId, email: testMailAddress));
+          return Stream.value(testUser);
         }),
         // Navigation/CalenderPageで使用するproviderをモックに置き換え
         eventStateNotifierProvider.overrideWith(() {

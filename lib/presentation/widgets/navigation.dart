@@ -6,6 +6,7 @@ import 'package:flutter_workout_manager/presentation/controller/navi_provider.da
 import 'package:flutter_workout_manager/presentation/pages/calender_page.dart';
 import 'package:flutter_workout_manager/presentation/pages/count_page.dart';
 import 'package:flutter_workout_manager/presentation/widgets/my_ad_banner.dart';
+import 'package:flutter_workout_manager/presentation/widgets/my_app_bar.dart';
 
 class Navigation extends ConsumerWidget {
   const Navigation({Key? key}) : super(key: key);
@@ -24,6 +25,7 @@ class Navigation extends ConsumerWidget {
     ];
 
     return Scaffold(
+      appBar: const MyAppBar(),
       body: pages[viewState.index],
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
