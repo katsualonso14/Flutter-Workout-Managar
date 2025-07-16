@@ -57,12 +57,14 @@ void main() {
   testWidgets('ローディング状態ならインジケータを表示', (tester) async {
     await tester.pumpWidget(ProviderScope(
       overrides: [
-        authStateProvider.overrideWith((ref) => Stream.value(null)),
+        // ローディング状態を模擬
+        authStateProvider.overrideWith((ref) => Stream<UserEntity?>.periodic(
+            const Duration(seconds: 1), (count) => null).take(1)),
       ],
       child: const MaterialApp(home: App()),
     ));
-
-    await tester.pump(const Duration(seconds: 3)); // ローディング状態を模擬
+    // 非同期処理の完了を待ちつつPump(UI描画)
+    await tester.pump(const Duration(seconds: 1));
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });

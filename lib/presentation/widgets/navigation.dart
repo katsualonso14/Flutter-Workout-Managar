@@ -32,7 +32,7 @@ class Navigation extends ConsumerWidget {
           BottomNavigationBar(
             items: const [
               BottomNavigationBarItem(
-                  icon: Icon(Icons.calendar_month), label: 'Calender'),
+                  icon: Icon(Icons.calendar_month), label: 'Calendar'),
               BottomNavigationBarItem(
                   icon: Icon(Icons.add_chart), label: 'Count'),
             ],
