@@ -10,14 +10,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'data/mock_event_state_notifier.dart';
 
-/// ユーザー判定の伴うUIチェック
-//TODO: この雛形を自分アプリに合わせて修正
+/// Firebaseユーザー判定のUIチェック
 void main() {
   testWidgets('ログイン済みならNavigationを表示', (tester) async {
     // テスト用のユーザー
     const testId = 'test_id';
     const testMailAddress = 'test@test.com';
-    // テスト用 Provider の override
     await tester.pumpWidget(ProviderScope(
       overrides: [
         authStateProvider.overrideWith((ref) {
@@ -56,36 +54,30 @@ void main() {
     expect(find.byType(Navigation), findsNothing);
   });
 
-  // testWidgets('ローディング状態ならインジケータを表示', (tester) async {
-  //   await tester.pumpWidget(
-  //     ProviderScope(
-  //       overrides: [
-  //         authStateProvider.overrideWith(
-  //           (ref) => Stream.value(null), // ログイン状態ではない
-  //         ),
-  //       ],
-  //       child: const MaterialApp(home: App()),
-  //     ),
-  //   );
-  //
-  //   await tester.pumpAndSettle();
-  //
-  //   expect(find.byType(CircularProgressIndicator), findsOneWidget);
-  // });
+  testWidgets('ローディング状態ならインジケータを表示', (tester) async {
+    await tester.pumpWidget(ProviderScope(
+      overrides: [
+        authStateProvider.overrideWith((ref) => Stream.value(null)),
+      ],
+      child: const MaterialApp(home: App()),
+    ));
 
-  //
-  // testWidgets('エラーならエラーテキストを表示', (tester) async {
-  //   await tester.pumpWidget(
-  //     ProviderScope(
-  //       overrides: [
-  //         authStateProvider.overrideWithValue(AsyncError(Exception())),
-  //       ],
-  //       child: const MaterialApp(home: YourWidget()),
-  //     ),
-  //   );
-  //
-  //   await tester.pump();
-  //
-  //   expect(find.text('エラーが発生しました'), findsOneWidget);
-  // });
+    await tester.pump(const Duration(seconds: 3)); // ローディング状態を模擬
+
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  });
+
+  testWidgets('エラーならエラーテキストを表示', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(overrides: [
+        authStateProvider.overrideWith(
+          (ref) => Stream.error('エラーが発生しました'),
+        ),
+      ], child: const MaterialApp(home: App())),
+    );
+
+    await tester.pump();
+
+    expect(find.text('エラーが発生しました'), findsOneWidget);
+  });
 }
