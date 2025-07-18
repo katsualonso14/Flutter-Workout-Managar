@@ -31,9 +31,12 @@ class App extends HookConsumerWidget {
     final userCheck = ref.watch(authStateProvider);
 
     return userCheck.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => const Center(
-              child: Text('エラーが発生しました'),
+        loading: () =>
+            const Scaffold(body: Center(child: CircularProgressIndicator())),
+        error: (error, stackTrace) => const Scaffold(
+              body: Center(
+                child: Text('Error occurred while checking user status'),
+              ),
             ),
         data: (data) {
           if (data == null) {
