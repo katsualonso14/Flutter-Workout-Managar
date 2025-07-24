@@ -72,13 +72,14 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(overrides: [
         authStateProvider.overrideWith(
-          (ref) => Stream.error('エラーが発生しました'),
+          (ref) => Stream.error('error'),
         ),
       ], child: const MaterialApp(home: App())),
     );
 
     await tester.pump();
 
-    expect(find.text('エラーが発生しました'), findsOneWidget);
+    expect(
+        find.text('Error occurred while checking user status'), findsOneWidget);
   });
 }
