@@ -1,5 +1,3 @@
-// TODO: 下記を参考に新しいGerenatorを使うやり方で修正
-//https://stackoverflow.com/questions/70516583/mockito-mocked-function-returned-null
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_workout_manager/domain/entities/user_entity.dart';

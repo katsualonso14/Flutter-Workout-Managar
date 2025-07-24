@@ -11,7 +11,7 @@ class EventRepositoryImpl implements EventRepository {
 
   EventRepositoryImpl(this.firestore);
 
-  Future<List<String>> getMyEventIds(String uid) async {
+  Future<List<String>> _getMyEventIds(String uid) async {
     final myEvents = await firestore
         .collection('users')
         .doc(uid)
@@ -26,7 +26,7 @@ class EventRepositoryImpl implements EventRepository {
   Future<Map<DateTime, List<MyEventInfoEntity>>> getEventFromIds(
       String id) async {
     Map<DateTime, List<MyEventInfoEntity>> events = {};
-    final myEvents = await getMyEventIds(id);
+    final myEvents = await _getMyEventIds(id);
 
     try {
       final firebaseEvents =
@@ -113,7 +113,7 @@ class EventRepositoryImpl implements EventRepository {
   @override
   Future<int> checkWeeklyEventCount(String uid, String duration) async {
     var eventDays = [];
-    final myEvents = await getMyEventIds(uid);
+    final myEvents = await _getMyEventIds(uid);
     final now = DateTime.now();
     final weekAgo = now.subtract(const Duration(days: 7));
     final monthAgo = now.subtract(const Duration(days: 30));
