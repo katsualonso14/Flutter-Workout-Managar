@@ -8,8 +8,8 @@ import 'package:flutter_workout_manager/presentation/pages/login.dart';
 import 'package:flutter_workout_manager/presentation/widgets/navigation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'data/mock_event_state_notifier.dart';
-import 'test_user.dart';
+import '../domain/entities/test_user.dart';
+import '../test_helper/mock_event_state_notifier.dart';
 
 /// Firebaseユーザー判定のUIチェック
 void main() {

@@ -11,23 +11,28 @@ class EventRepositoryImpl implements EventRepository {
 
   EventRepositoryImpl(this.firestore);
 
-  @override
   Future<List<String>> getMyEventIds(String uid) async {
-    final myEvents = await firestore.collection('users').doc(uid).collection('myEvents').get();
+    final myEvents = await firestore
+        .collection('users')
+        .doc(uid)
+        .collection('myEvents')
+        .get();
     return myEvents.docs.map((e) => e.id).toList();
   }
 
   // ユーザのイベントID・イベント名が紐づく形で保持(全体のイベントコレクションから)
   // User情報が持っているmyEventのIDと照合してイベントを取得
   @override
-  Future<Map<DateTime, List<MyEventInfoEntity>>> getEventFromIds(String id) async {
+  Future<Map<DateTime, List<MyEventInfoEntity>>> getEventFromIds(
+      String id) async {
     Map<DateTime, List<MyEventInfoEntity>> events = {};
     final myEvents = await getMyEventIds(id);
 
     try {
-      final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
-      final doc = myEvents.map((element) => firebaseEvents.doc(element).get())
-          .toList();
+      final firebaseEvents =
+          FirebaseFirestore.instance.collection('calendar_events');
+      final doc =
+          myEvents.map((element) => firebaseEvents.doc(element).get()).toList();
       // 非同期処理を待つ
       final snapshot = await Future.wait(doc);
 
@@ -51,11 +56,11 @@ class EventRepositoryImpl implements EventRepository {
 
         // Model → Entity
         events.putIfAbsent(eventDateTime, () => []).add(
-          MyEventInfoEntity(
-            eventId: doc.id,
-            event: model.event,
-          ),
-        );
+              MyEventInfoEntity(
+                eventId: doc.id,
+                event: model.event,
+              ),
+            );
       }
 
       return events;
@@ -68,7 +73,8 @@ class EventRepositoryImpl implements EventRepository {
   // イベントを追加
   @override
   Future<void> addEvent(EventEntity newEvent) async {
-    final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
+    final firebaseEvents =
+        FirebaseFirestore.instance.collection('calendar_events');
     final firebaseUsers = FirebaseFirestore.instance.collection('users');
     final userEvent = firebaseUsers.doc(newEvent.userid).collection('myEvents');
 
@@ -92,9 +98,12 @@ class EventRepositoryImpl implements EventRepository {
   Future<void> deleteEvent(String uid, String eventId) async {
     final firebaseUsers = FirebaseFirestore.instance.collection('users');
     final userEvent = firebaseUsers.doc(uid).collection('myEvents');
-    final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
+    final firebaseEvents =
+        FirebaseFirestore.instance.collection('calendar_events');
     // イベント名が一致するものを取得
-    final event = await firebaseEvents.where(FieldPath.documentId, isEqualTo: eventId).get();
+    final event = await firebaseEvents
+        .where(FieldPath.documentId, isEqualTo: eventId)
+        .get();
     final docs = event.docs.first; // 一致したものの最初のものだけ削除(同じ名前のイベントは削除しない)
     await userEvent.doc(docs.id).delete();
     await firebaseEvents.doc(docs.id).delete();
@@ -110,8 +119,9 @@ class EventRepositoryImpl implements EventRepository {
     final monthAgo = now.subtract(const Duration(days: 30));
     final yearAgo = now.subtract(const Duration(days: 365));
 
-    for(String element in myEvents) {
-      final firebaseEvents = FirebaseFirestore.instance.collection('calendar_events');
+    for (String element in myEvents) {
+      final firebaseEvents =
+          FirebaseFirestore.instance.collection('calendar_events');
       final doc = await firebaseEvents.doc(element).get();
 
       final data = doc.data()!;
@@ -120,11 +130,17 @@ class EventRepositoryImpl implements EventRepository {
       final eventDateTime = date.add(date.timeZoneOffset).toUtc();
 
       // 今週のものをカウント
-      if (duration == 'weekly' && eventDateTime.isAfter(weekAgo) && eventDateTime.isBefore(now)) {
+      if (duration == 'weekly' &&
+          eventDateTime.isAfter(weekAgo) &&
+          eventDateTime.isBefore(now)) {
         eventDays.add(eventDateTime);
-      } else if (duration == 'monthly' && eventDateTime.isAfter(monthAgo) && eventDateTime.isBefore(now)) {
+      } else if (duration == 'monthly' &&
+          eventDateTime.isAfter(monthAgo) &&
+          eventDateTime.isBefore(now)) {
         eventDays.add(eventDateTime);
-      } else if (duration == 'yearly' && eventDateTime.isAfter(yearAgo) && eventDateTime.isBefore(now)) {
+      } else if (duration == 'yearly' &&
+          eventDateTime.isAfter(yearAgo) &&
+          eventDateTime.isBefore(now)) {
         eventDays.add(eventDateTime);
       }
     }
