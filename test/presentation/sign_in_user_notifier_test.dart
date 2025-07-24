@@ -28,7 +28,7 @@ void main() {
   });
 
   test('signIn成功時は状態がAsyncLoading→AsyncDataに変わる', () async {
-    // arrange: signInが成功するようにセット
+    // signInが成功するようにセット
     when(mockRepository.signIn(email: 'test@example.com', password: 'password'))
         .thenAnswer((_) async =>
             UserEntity(uid: 'test_uid', email: 'test@example.com'));
@@ -46,7 +46,7 @@ void main() {
   });
 
   test('signIn失敗時は状態がAsyncLoading→AsyncErrorに変わる', () async {
-    // arrange: signInが例外を投げるようにセット
+    // signInが例外を投げるようにセット
     final exception = Exception('sign in failed');
     when(mockRepository.signIn(
             email: anyNamed('email'), password: anyNamed('password')))
