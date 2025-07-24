@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_workout_manager/core/firebase_options.dart';
 import 'package:flutter_workout_manager/presentation/controller/auth_providers.dart';
 import 'package:flutter_workout_manager/presentation/pages/login.dart';
-import 'package:flutter_workout_manager/presentation/widgets/dialog/delete_check_dialog.dart';
-import 'package:flutter_workout_manager/presentation/widgets/dialog/logout_alert_dialog.dart';
 import 'package:flutter_workout_manager/presentation/widgets/navigation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -31,43 +29,21 @@ class App extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userCheck = ref.watch(authStateProvider);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home Fitness Manager',
-            style: TextStyle(color: Colors.blue, fontStyle: FontStyle.italic)),
-        actions: [
-          // ログインアウトボタン
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return const LogoutAlertDialog();
-                  });
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (context) => const DeleteCheckDialog());
-            },
-          ),
-        ],
-      ),
-      body: userCheck.when(error: (error, stackTrace) {
-        return const Center(child: Text('エラーが発生しました'));
-      }, loading: () {
-        return const Center(child: CircularProgressIndicator());
-      }, data: (data) {
-        if (data != null) {
-          return const Navigation();
-        } else {
-          return const LogIn();
-        }
-      }),
-    );
+
+    return userCheck.when(
+        loading: () =>
+            const Scaffold(body: Center(child: CircularProgressIndicator())),
+        error: (error, stackTrace) => const Scaffold(
+              body: Center(
+                child: Text('Error occurred while checking user status'),
+              ),
+            ),
+        data: (data) {
+          if (data == null) {
+            return const LogIn();
+          } else {
+            return const Navigation();
+          }
+        });
   }
 }

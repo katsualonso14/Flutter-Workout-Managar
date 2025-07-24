@@ -8,18 +8,16 @@ import 'package:flutter_workout_manager/presentation/pages/login.dart';
 import 'package:flutter_workout_manager/presentation/widgets/navigation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'data/mock_event_state_notifier.dart';
+import '../domain/entities/test_user.dart';
+import '../test_helper/mock_event_state_notifier.dart';
 
 /// Firebaseユーザー判定のUIチェック
 void main() {
   testWidgets('ログイン済みならNavigationを表示', (tester) async {
-    // テスト用のユーザー
-    const testId = 'test_id';
-    const testMailAddress = 'test@test.com';
     await tester.pumpWidget(ProviderScope(
       overrides: [
         authStateProvider.overrideWith((ref) {
-          return Stream.value(UserEntity(uid: testId, email: testMailAddress));
+          return Stream.value(testUser);
         }),
         // Navigation/CalenderPageで使用するproviderをモックに置き換え
         eventStateNotifierProvider.overrideWith(() {
@@ -63,23 +61,25 @@ void main() {
       ],
       child: const MaterialApp(home: App()),
     ));
-    // 非同期処理の完了を待ちつつPump(UI描画)
-    await tester.pump(const Duration(seconds: 1));
-
+    // emit前のローディング状態で確認
+    await tester.pump(const Duration(milliseconds: 100));
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    await tester.pumpAndSettle(); // pending Timer を消化して安全にテスト終了
   });
 
   testWidgets('エラーならエラーテキストを表示', (tester) async {
     await tester.pumpWidget(
       ProviderScope(overrides: [
         authStateProvider.overrideWith(
-          (ref) => Stream.error('エラーが発生しました'),
+          (ref) => Stream.error('error'),
         ),
       ], child: const MaterialApp(home: App())),
     );
 
     await tester.pump();
 
-    expect(find.text('エラーが発生しました'), findsOneWidget);
+    expect(
+        find.text('Error occurred while checking user status'), findsOneWidget);
   });
 }
