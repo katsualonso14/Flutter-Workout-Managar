@@ -56,8 +56,9 @@ void main() {
     await tester.pumpWidget(ProviderScope(
       overrides: [
         // ローディング状態を模擬
+        // わざと、データがきていない状態(Loading)を再現
         authStateProvider.overrideWith((ref) => Stream<UserEntity?>.periodic(
-            const Duration(seconds: 1), (count) => null).take(1)),
+            const Duration(milliseconds: 10), (count) => null).take(1)),
       ],
       child: const MaterialApp(home: App()),
     ));
@@ -65,7 +66,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
-    await tester.pumpAndSettle(); // pending Timer を消化して安全にテスト終了
+    await tester.pumpAndSettle(); // periodicのTimerを消化して安全にテスト終了
   });
 
   testWidgets('エラーならエラーテキストを表示', (tester) async {
