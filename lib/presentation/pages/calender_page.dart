@@ -43,7 +43,7 @@ class CalenderPage extends HookConsumerWidget {
       // 初回データ取得
       fetchEventData();
       return () {};
-    },const []);
+    }, const []);
 
     //　イベントカウント関数
     int eventCount(Map<DateTime, List<MyEventInfoEntity>> eventData) {
@@ -83,14 +83,16 @@ class CalenderPage extends HookConsumerWidget {
                   child: ListView.builder(
                     itemCount: eventCount(eventData.value),
                     itemBuilder: (context, index) {
-                      final events = eventData.value[focusedDayState.value] ?? [];
+                      final events =
+                          eventData.value[focusedDayState.value] ?? [];
                       if (index >= events.length) {
                         return const SizedBox.shrink();
                       }
                       return Dismissible(
                         key: Key(events[index].eventId),
                         onDismissed: (direction) async {
-                          await eventStateNotifier.deleteEvent(data.uid, events[index].eventId);
+                          await eventStateNotifier.deleteEvent(
+                              data.uid, events[index].eventId);
                           await fetchEventData();
                         },
                         child: Card(
@@ -102,37 +104,28 @@ class CalenderPage extends HookConsumerWidget {
                     },
                   ),
                 ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 20, bottom: 30),
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        final result = await Navigator.of(context)
-                            .push(MaterialPageRoute(builder: (context) {
-                          return AddPage(
-                              uid: data.uid,
-                              selectedDay: focusedDayState.value
-                          );
-                        }));
-
-                        if (result == true) {
-                          await fetchEventData();
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        shape: const CircleBorder(),
-                        padding: const EdgeInsets.all(20),
-                      ),
-                      child: const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
               ],
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () async {
+                final result = await Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return AddPage(
+                      uid: data.uid, selectedDay: focusedDayState.value);
+                }));
+
+                if (result == true) {
+                  await fetchEventData();
+                }
+              },
+              backgroundColor: Colors.blue,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
             ),
           );
   }
