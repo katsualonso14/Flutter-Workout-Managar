@@ -5,4 +5,5 @@ import 'package:mockito/annotations.dart';
 import 'auth_repository.mocks.dart';
 
 // ダミー参照
+// ignore: unused_element
 const _ = MockAuthRepository;
